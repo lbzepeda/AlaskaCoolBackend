@@ -14,7 +14,7 @@ class User:
 class Query:
     @strawberry.field
     def user(id: int) -> User:
-        return conn.execute(users.select().where(users.c.id == id)).fetchone()
+        return conn.execute(users.select().where(users.c.id == 1)).fetchone()
     @strawberry.field
     def users(self) -> typing.List[User]:
         return conn.execute(users.select()).fetchall()
@@ -46,3 +46,5 @@ class Mutation:
     def delete_user(self, id: int) -> bool:
         result = conn.execute(users.delete().where(users.c.id == id))
         return result.rowcount > 0
+    
+    
