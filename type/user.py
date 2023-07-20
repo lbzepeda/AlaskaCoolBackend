@@ -14,7 +14,7 @@ class User:
 class Query:
     @strawberry.field
     def user(id: int) -> User:
-        return conn.execute(users.select().where(users.c.id == 1)).fetchone()
+        return conn.execute(users.select().where(users.c.id == id)).fetchone()
     @strawberry.field
     def users(self) -> typing.List[User]:
         return conn.execute(users.select()).fetchall()
