@@ -2,3 +2,4 @@ fastapi
 SQLAlchemy
 strawberry-graphql
 uvicorn
+pymysql
