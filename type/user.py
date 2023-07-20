@@ -32,6 +32,7 @@ class Mutation:
             "password": password
         }
         result = conn.execute(users.insert(),user)
+        conn.commit();
         return int(result.inserted_primary_key[0])
     @strawberry.mutation
     def update_user(self, id:int, name: str, email: str, password: str, info: Info) -> str:
@@ -41,6 +42,7 @@ class Mutation:
             "password": password
         })
         print(result. returns_rows)
+        conn.commit();
         return str(result.rowcount) + " Row(s) updated"
     @strawberry.mutation
     def delete_user(self, id: int) -> bool:
