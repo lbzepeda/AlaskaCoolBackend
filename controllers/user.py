@@ -1,6 +1,4 @@
 from fastapi import APIRouter
-from conn.db import conn 
-from models.index import users
 from type.user import Mutation, Query
 from strawberry.asgi import GraphQL
 import strawberry
