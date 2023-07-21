@@ -7,4 +7,4 @@ user = APIRouter()
 schema = strawberry.Schema(Query, Mutation)
 graphql_app = GraphQL(schema)
 
-user.add_route("/graphql", graphql_app)
+user.add_route("/user", graphql_app)

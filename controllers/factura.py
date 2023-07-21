@@ -7,4 +7,4 @@ factura = APIRouter()
 schema = strawberry.Schema(Query)
 graphql_app = GraphQL(schema)
 
-factura.add_route("/graphql", graphql_app)
+factura.add_route("/factura", graphql_app)
