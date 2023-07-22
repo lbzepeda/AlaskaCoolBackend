@@ -1,10 +1,10 @@
 from fastapi import APIRouter
-from type.user import Mutation, Query
+from type.usuario import Mutation, Query
 from strawberry.asgi import GraphQL
 import strawberry
-user = APIRouter()
+usuario = APIRouter()
 
 schema = strawberry.Schema(Query, Mutation)
 graphql_app = GraphQL(schema)
 
-user.add_route("/user", graphql_app)
+usuario.add_route("/usuario", graphql_app)

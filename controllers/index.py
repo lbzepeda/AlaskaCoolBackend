@@ -1,2 +1,2 @@
-from controllers.user import user
+from controllers.usuario import usuario
 from controllers.factura import factura
