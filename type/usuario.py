@@ -4,7 +4,7 @@ from conn.db import conn
 from models.index import usuarios
 from models.index import estados
 from strawberry.types import Info
-from sqlalchemy.orm import relationship, joinedload
+from typing import Optional
 
 lstEstados = conn.execute(estados.select()).fetchall()
 
@@ -21,15 +21,22 @@ class Usuario:
     correo: str
     idEstado: int
     @strawberry.field
-    async def estado(self, info: Info) -> typing.List[Estado]:
-        #N+1
-        return conn.execute(estados.select().where(estados.c.id == self.idEstado))
+    def estado(self, info: Info) -> Estado:  
+        estado = next((estado for estado in lstEstados if estado.id == self.idEstado), None)
+        if estado:
+            return Estado(**dict(estado._mapping))
+        else:
+            return None
     
 @strawberry.type
 class Query:
     @strawberry.field
-    def usuario(id: int) -> Usuario:
+    def usuario(id: int) -> Optional[Usuario]:
         return conn.execute(usuarios.select().where(usuarios.c.id == id)).fetchone()
+    @strawberry.field
+    def usuario_por_correo(correo: str) -> Optional[Usuario]:
+        query = usuarios.select().where(usuarios.c.correo == correo)
+        return conn.execute(query).fetchone()
     @strawberry.field
     def usuarios(self) -> typing.List[Usuario]:
         return conn.execute(usuarios.select()).fetchall()
@@ -58,9 +65,5 @@ class Mutation:
         print(result. returns_rows)
         conn.commit();
         return str(result.rowcount) + " Row(s) updated"
-    @strawberry.mutation
-    def delete_usuario(self, id: int) -> bool:
-        result = conn.execute(usuarios.delete().where(usuarios.c.id == id))
-        return result.rowcount > 0
     
     
