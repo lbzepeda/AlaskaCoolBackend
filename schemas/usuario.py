@@ -3,3 +3,4 @@ class Usuario(BaseModel):
     id: int
     nombe: str
     correo: str
+    idEstado: int

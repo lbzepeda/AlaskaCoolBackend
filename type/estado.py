@@ -7,7 +7,7 @@ from models.index import estados
 class Estado:
     id: int
     nombre: str
-    correo: str
+    descripcion: str
 @strawberry.type
 class Query:
     @strawberry.field
