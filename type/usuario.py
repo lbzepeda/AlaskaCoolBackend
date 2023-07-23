@@ -23,9 +23,6 @@ class Usuario:
     @strawberry.field
     async def estado(self, info: Info) -> typing.List[Estado]:
         #N+1
-        lstUsuarios = conn.execute(usuarios.select()).fetchall()
-        lstEstados = conn.execute(estados.select()).fetchall()
-
         return conn.execute(estados.select().where(estados.c.id == self.idEstado))
     
 @strawberry.type
@@ -35,7 +32,6 @@ class Query:
         return conn.execute(usuarios.select().where(usuarios.c.id == id)).fetchone()
     @strawberry.field
     def usuarios(self) -> typing.List[Usuario]:
-        print(f"Usuario: {conn.execute(estados.select()).fetchall()}")
         return conn.execute(usuarios.select()).fetchall()
 
 @strawberry.type
