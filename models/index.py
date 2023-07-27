@@ -5,5 +5,6 @@ from models.factura import facturas
 from models.estado import estados
 from models.tipousuario import tipo_usuario
 from models.cuadrilla import cuadrillas
+from models.usuariocuadrilla import usuario_cuadrilla
 
 meta.create_all(engine)
