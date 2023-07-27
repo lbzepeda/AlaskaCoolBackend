@@ -3,10 +3,8 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Table, Column, Integer, String
 from sqlalchemy.sql.sqltypes import Integer, String
 
-usuarios = Table('usuarios', meta,
+cuadrillas = Table('cuadrilla', meta,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('nombre', String(50)),
-    Column('correo', String(50)),
-    Column('idEstado', Integer, ForeignKey('estados.id'), default=1),
-    Column('idTipoUsuario', Integer, ForeignKey('tipo_usuario.id'))
+    Column('descripcion', String(50)),
 )
