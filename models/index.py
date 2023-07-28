@@ -6,5 +6,6 @@ from models.estado import estados
 from models.tipousuario import tipo_usuario
 from models.cuadrilla import cuadrillas
 from models.usuariocuadrilla import usuario_cuadrilla
+from models.detallefatura import det_facturas
 
 meta.create_all(engine)
