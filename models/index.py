@@ -7,5 +7,6 @@ from models.tipousuario import tipo_usuario
 from models.cuadrilla import cuadrillas
 from models.usuariocuadrilla import usuario_cuadrilla
 from models.detallefatura import det_facturas
+from models.producto import productos
 
 meta.create_all(engine)

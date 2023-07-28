@@ -5,3 +5,4 @@ from controllers.tipousuario import tipousuario
 from controllers.cuadrilla import cuadrilla
 from controllers.usuariocuadrilla import usuariocuadrilla
 from controllers.detallefactura import detallefactura
+from controllers.producto import producto
