@@ -72,8 +72,8 @@ class DetalleFactura:
 @strawberry.type
 class Query:
     @strawberry.field
-    def detalle_factura(NoFactura: str) -> DetalleFactura:
-        return conn.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchone()
+    def detalle_factura(NoFactura: str) -> typing.List[DetalleFactura]:
+        return conn.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchall()
     @strawberry.field
     def detalles_factura(self) -> typing.List[DetalleFactura]:
         return conn.execute(det_facturas.select()).fetchall()

@@ -6,3 +6,4 @@ from controllers.cuadrilla import cuadrilla
 from controllers.usuariocuadrilla import usuariocuadrilla
 from controllers.detallefactura import detallefactura
 from controllers.producto import producto
+from controllers.detalleproforma import detalleproforma

@@ -8,5 +8,6 @@ from models.cuadrilla import cuadrillas
 from models.usuariocuadrilla import usuario_cuadrilla
 from models.detallefatura import det_facturas
 from models.producto import productos
+from models.detalleproforma import det_proforma
 
 meta.create_all(engine)
