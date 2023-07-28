@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from controllers.index import usuario, factura, estado, tipousuario, cuadrilla, usuariocuadrilla, detallefactura, producto, detalleproforma
+from controllers.index import usuario, factura, estado, tipousuario, cuadrilla, usuariocuadrilla, detallefactura, producto, detalleproforma, proforma
 app = FastAPI()
 
 app.include_router(usuario)
@@ -11,3 +11,4 @@ app.include_router(usuariocuadrilla)
 app.include_router(detallefactura)
 app.include_router(producto)
 app.include_router(detalleproforma)
+app.include_router(proforma)
