@@ -10,5 +10,6 @@ from models.detallefatura import det_facturas
 from models.producto import productos
 from models.detalleproforma import det_proforma
 from models.proforma import proforma
+from models.horarioprogramacion import horario_programacion
 
 meta.create_all(engine)
