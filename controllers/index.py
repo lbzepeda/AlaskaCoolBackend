@@ -9,3 +9,4 @@ from controllers.producto import producto
 from controllers.detalleproforma import detalleproforma
 from controllers.proforma import proforma
 from controllers.horarioprogramacion import horario_programacion
+from controllers.programacion import programacion
