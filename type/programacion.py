@@ -13,7 +13,7 @@ import ssl
 from dotenv import load_dotenv
 from datetime import time
 
-#load_dotenv()
+load_dotenv()
 slack_token = os.getenv('SLACK_TOKEN')
 ssl._create_default_https_context = ssl._create_unverified_context
 client = WebClient(token=slack_token)

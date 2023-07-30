@@ -3,3 +3,5 @@ SQLAlchemy
 strawberry-graphql
 uvicorn
 pymysql
+slack_sdk
+python-dotenv
