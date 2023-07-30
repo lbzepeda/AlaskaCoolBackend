@@ -13,7 +13,7 @@ import ssl
 from dotenv import load_dotenv
 from datetime import time
 
-load_dotenv()
+#load_dotenv()
 slack_token = os.getenv('SLACK_TOKEN')
 ssl._create_default_https_context = ssl._create_unverified_context
 client = WebClient(token=slack_token)
@@ -608,8 +608,6 @@ class Mutation:
         usuario = Usuario.from_row(usuario_row)
         horario = HorarioProgramacion.from_row(horario_row)
 
-        print(f"No se encontró un producto con el código {servicio}")
-        print(f"No se encontró un producto con el código {usuario}")
         text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, para el dia {horario.fechainicio.strftime('%Y-%m-%d')} a las {horario.horainicio.strftime('%H:%M')}."
 
         print(f"texto {text}")
