@@ -1,11 +1,22 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas
+from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion
 from strawberry.types import Info
 from datetime import datetime
 from typing import Optional
 from decimal import Decimal
+import os
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+import ssl
+from dotenv import load_dotenv
+from datetime import time
+
+load_dotenv()
+slack_token = os.getenv('SLACK_TOKEN')
+ssl._create_default_https_context = ssl._create_unverified_context
+client = WebClient(token=slack_token)
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
@@ -15,6 +26,27 @@ lstCuadrillas = conn.execute(cuadrillas.select()).fetchall()
 lstUsuario_Cuadrilla = conn.execute(usuario_cuadrilla.select()).fetchall()
 lstFacturas = conn.execute(facturas.select()).fetchall()
 lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
+
+def send_message(text: str):
+    try:
+        response = client.chat_postMessage(
+            channel="C05L4FPK7CG",  # Aquí puedes cambiar el ID de tu canal
+            text=text)  # Aquí utilizamos la variable text
+    except SlackApiError as e:
+        print(f"Got an error: {e.response['error']}")
+        print(slack_token)
+
+@strawberry.type
+class HorarioProgramacion:
+    id: int
+    fechainicio: datetime
+    fechafin: datetime
+    horainicio: time
+    horafin: time
+
+    @classmethod
+    def from_row(cls, row):
+        return cls(**row._asdict())
 
 @strawberry.type
 class Productos:
@@ -160,6 +192,10 @@ class Productos:
     CodigoAlterno: str
     DerechoAutor: str
 
+    @classmethod
+    def from_row(cls, row):
+        return cls(**row._asdict())
+
 @strawberry.type
 class DetalleProforma:
     Sucursal: str
@@ -292,6 +328,10 @@ class Usuario:
     correo: str
     idEstado: int
     idTipoUsuario: int
+
+    @classmethod
+    def from_row(cls, row):
+        return cls(**row._asdict())
 
 @strawberry.type
 class Cuadrilla:
@@ -517,6 +557,10 @@ class Programacion:
     idHorarioProgramacion: Optional[int] = None
     UrlGeoLocalizacion: str
 
+    @classmethod
+    def from_row(cls, row):
+        return cls(**row)
+
 
 @strawberry.type
 class Query:
@@ -555,9 +599,23 @@ class Mutation:
             "idHorarioProgramacion": idHorarioProgramacion,
         }
         result = conn.execute(programacion.insert(), data_programacion)
+        
+        usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioCreacion)).fetchone()
+        servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
+        horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
+
+        servicio = Productos.from_row(servicio_row)
+        usuario = Usuario.from_row(usuario_row)
+        horario = HorarioProgramacion.from_row(horario_row)
+
+        print(f"No se encontró un producto con el código {servicio}")
+        print(f"No se encontró un producto con el código {usuario}")
+        text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, para el dia {horario.fechainicio.strftime('%Y-%m-%d')} a las {horario.horainicio.strftime('%H:%M')}."
+
+        print(f"texto {text}")
+        send_message(text)
         conn.commit()
         return int(result.inserted_primary_key[0])
-
 
     @strawberry.mutation
     def update_usuario(self, id: int, 
