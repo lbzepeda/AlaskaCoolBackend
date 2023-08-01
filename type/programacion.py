@@ -26,6 +26,7 @@ lstCuadrillas = conn.execute(cuadrillas.select()).fetchall()
 lstUsuario_Cuadrilla = conn.execute(usuario_cuadrilla.select()).fetchall()
 lstFacturas = conn.execute(facturas.select()).fetchall()
 lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
+lstHorarioProgramacion = conn.execute(horario_programacion.select()).fetchall()
 
 def send_message(text: str):
     try:
@@ -555,8 +556,11 @@ class Programacion:
         usuariocuadrilla = [UsuarioCuadrilla(**dict(usuario_cuadrilla._mapping)) for usuario_cuadrilla in lstUsuario_Cuadrilla if usuario_cuadrilla.idCuadrilla == self.idCuadrilla]
         return usuariocuadrilla if usuariocuadrilla else []
     idHorarioProgramacion: Optional[int] = None
+    @strawberry.field
+    def horarioprogramacion(self, info: Info) -> Optional[HorarioProgramacion]:  
+        horarioprogramacion = [HorarioProgramacion(**dict(horarioprogramacion._mapping)) for horarioprogramacion in lstHorarioProgramacion if horarioprogramacion and horarioprogramacion.id == self.idHorarioProgramacion]
+        return horarioprogramacion[0] if horarioprogramacion else None
     UrlGeoLocalizacion: str
-
     @classmethod
     def from_row(cls, row):
         return cls(**row)
