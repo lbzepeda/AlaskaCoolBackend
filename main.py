@@ -1,6 +1,10 @@
 from fastapi import FastAPI
+from strawberry.fastapi import GraphQLRouter
 from fastapi.middleware.cors import CORSMiddleware
-from controllers.index import usuario, factura, estado, tipousuario, cuadrilla, usuariocuadrilla, detallefactura, producto, detalleproforma, proforma, horario_programacion, programacion
+#from controllers.index import usuario, factura, estado, tipousuario, cuadrilla, usuariocuadrilla, detallefactura, producto, detalleproforma, proforma, horario_programacion, programacion
+import strawberry
+from queries.queries import Query
+from mutations.mutations import Mutation
 app = FastAPI()
 
 app.add_middleware(
@@ -11,15 +15,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-app.include_router(usuario)
-app.include_router(factura)
-app.include_router(estado)
-app.include_router(tipousuario)
-app.include_router(cuadrilla)
-app.include_router(usuariocuadrilla)
-app.include_router(detallefactura)
-app.include_router(producto)
-app.include_router(detalleproforma)
-app.include_router(proforma)
-app.include_router(horario_programacion)
-app.include_router(programacion)
+schema = strawberry.Schema(query=Query, mutation=Mutation)
+graphql_app = GraphQLRouter(schema)
+app = FastAPI()
+app.include_router(graphql_app, prefix="/graphql")
