@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import strawberry
 from queries.queries import Query
 from mutations.mutations import Mutation
+
 app = FastAPI()
 
 app.add_middleware(
@@ -16,5 +17,5 @@ app.add_middleware(
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 graphql_app = GraphQLRouter(schema)
-app = FastAPI()
+
 app.include_router(graphql_app, prefix="/graphql")
