@@ -69,11 +69,12 @@ class DetalleFactura:
     Impuesto5: Optional[Decimal]
     ProductoConsignado: str
     NumeroTrasladoConsignado: Optional[str]
-@strawberry.type
-class Query:
-    @strawberry.field
-    def detalle_factura(NoFactura: str) -> typing.List[DetalleFactura]:
-        return conn.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchall()
-    @strawberry.field
-    def detalles_factura(self) -> typing.List[DetalleFactura]:
-        return conn.execute(det_facturas.select()).fetchall()
+
+@strawberry.field
+def detalle_factura_por_id(NoFactura: str) -> typing.List[DetalleFactura]:
+    return conn.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchall()
+@strawberry.field
+def detalles_factura(self) -> typing.List[DetalleFactura]:
+    return conn.execute(det_facturas.select()).fetchall()
+
+lstDetalleFacturaQuery = [detalle_factura_por_id, detalles_factura]

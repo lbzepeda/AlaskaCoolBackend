@@ -51,11 +51,12 @@ class DetalleProforma:
     Impuesto3: Optional[float] = None
     Impuesto4: Optional[float] = None
     Impuesto5: Optional[float] = None
-@strawberry.type
-class Query:
-    @strawberry.field
-    def detalle_proforma(NoFactura: str) -> typing.List[DetalleProforma]:
-        return conn.execute(det_proforma.select().where(det_proforma.c.NoFactura == NoFactura)).fetchall()
-    @strawberry.field
-    def detalles_proformas(self) -> typing.List[DetalleProforma]:
-        return conn.execute(det_proforma.select()).fetchall()
+
+@strawberry.field
+def detalle_proforma_por_id(NoFactura: str) -> typing.List[DetalleProforma]:
+    return conn.execute(det_proforma.select().where(det_proforma.c.NoFactura == NoFactura)).fetchall()
+@strawberry.field
+def detalles_proforma(self) -> typing.List[DetalleProforma]:
+    return conn.execute(det_proforma.select()).fetchall()
+
+lstDetalleProformaQuery = [detalle_proforma_por_id, detalles_proforma]
