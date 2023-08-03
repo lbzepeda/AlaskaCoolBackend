@@ -12,5 +12,7 @@ programacion = Table('programacion', meta,
     Column('idUsuarioCreacion', Integer, ForeignKey('usuarios.id')),
     Column('idCuadrilla', Integer, ForeignKey('cuadrilla.id'), nullable=True),
     Column('idHorarioProgramacion', Integer, ForeignKey('horario_programacion.id'), nullable=True),
-    Column('UrlGeoLocalizacion', Text)
+    Column('UrlGeoLocalizacion', Text),
+    Column('direccion', Text, nullable=True),
+    Column('observaciones', Text, nullable=True),
 )

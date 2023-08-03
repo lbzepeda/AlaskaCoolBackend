@@ -561,6 +561,8 @@ class Programacion:
         horarioprogramacion = [HorarioProgramacion(**dict(horarioprogramacion._mapping)) for horarioprogramacion in lstHorarioProgramacion if horarioprogramacion and horarioprogramacion.id == self.idHorarioProgramacion]
         return horarioprogramacion[0] if horarioprogramacion else None
     UrlGeoLocalizacion: str
+    direccion: Optional[str]
+    observaciones: Optional[str]
     @classmethod
     def from_row(cls, row):
         return cls(**row)
@@ -590,7 +592,9 @@ class Mutation:
         codfactura: Optional[str] = None, 
         codproforma: Optional[str] = None,
         idCuadrilla: Optional[int] = None, 
-        idHorarioProgramacion: Optional[int] = None) -> int:
+        idHorarioProgramacion: Optional[int] = None,
+        direccion: Optional[str] = None,
+        observaciones: Optional[str] = None) -> int:
         
         data_programacion = {
             "codservicio": codservicio,
@@ -601,6 +605,8 @@ class Mutation:
             "codproforma": codproforma,
             "idCuadrilla": idCuadrilla,
             "idHorarioProgramacion": idHorarioProgramacion,
+            "direccion": direccion,
+            "observaciones": observaciones,
         }
         result = conn.execute(programacion.insert(), data_programacion)
         
@@ -629,7 +635,9 @@ class Mutation:
         codfactura: Optional[str] = None, 
         codproforma: Optional[str] = None,
         idCuadrilla: Optional[int] = None, 
-        idHorarioProgramacion: Optional[int] = None) -> str:
+        idHorarioProgramacion: Optional[int] = None,
+        direccion: Optional[str] = None,
+        observaciones: Optional[str] = None) -> str:
         result = conn.execute(programacion.update().where(programacion.c.id == id), {
             "codservicio": codservicio,
             "idUsuarioCreacion": idUsuarioCreacion,
@@ -639,6 +647,8 @@ class Mutation:
             "codproforma": codproforma,
             "idCuadrilla": idCuadrilla,
             "idHorarioProgramacion": idHorarioProgramacion,
+            "direccion": direccion,
+            "observaciones": observaciones,
         })
         print(result. returns_rows)
         conn.commit()

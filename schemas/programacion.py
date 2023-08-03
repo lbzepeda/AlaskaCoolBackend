@@ -11,3 +11,5 @@ class Programacion(BaseModel):
     idCuadrilla: Optional[int] = None
     idHorarioProgramacion: Optional[int] = None
     UrlGeoLocalizacion: str
+    direccion: Optional[int]
+    observaciones: Optional[str] = None
