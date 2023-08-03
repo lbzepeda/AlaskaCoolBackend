@@ -7,15 +7,10 @@ from models.index import estados
 from models.index import tipo_usuario
 import strawberry
 from strawberry.types import Info
+from .tipousuario import TipoUsuario
 
 lstEstados = conn.execute(estados.select()).fetchall()
 lstTipoUsuario = conn.execute(tipo_usuario.select()).fetchall()
-
-@strawberry.type
-class TipoUsuario:
-    id: int
-    nombre : str
-    descripcion: str
 
 @strawberry.type
 class Estado:
