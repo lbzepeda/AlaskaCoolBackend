@@ -3,5 +3,6 @@ from .usuario import *
 from .cuadrilla import *
 from .detallefactura import *
 from .detalleproforma import *
+from .factura import *
 
-Query = create_type("Query", lstUsuarioQuery + lstCuadrillaQuery + lstDetalleFacturaQuery + lstDetalleProformaQuery)
+Query = create_type("Query", lstUsuarioQuery + lstCuadrillaQuery + lstDetalleFacturaQuery + lstDetalleProformaQuery + lstFacturaQuery)

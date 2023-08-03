@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 from fastapi.middleware.cors import CORSMiddleware
-#from controllers.index import usuario, factura, estado, tipousuario, cuadrilla, usuariocuadrilla, detallefactura, producto, detalleproforma, proforma, horario_programacion, programacion
 import strawberry
 from queries.queries import Query
 from mutations.mutations import Mutation
