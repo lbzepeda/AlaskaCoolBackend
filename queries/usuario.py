@@ -46,7 +46,7 @@ class Usuario:
             return None
 
 @strawberry.field
-def lista_usuario_por_id(id: int) -> Optional[Usuario]:
+def usuario_por_id(id: int) -> Optional[Usuario]:
     return conn.execute(usuarios.select().where(usuarios.c.id == id)).fetchone()
 @strawberry.field
 def usuario_por_correo(correo: str) -> Optional[Usuario]:
@@ -56,4 +56,4 @@ def usuario_por_correo(correo: str) -> Optional[Usuario]:
 def lista_usuario(self) -> typing.List[Usuario]:
     return conn.execute(usuarios.select()).fetchall()
 
-lstUsuarioQuery = [lista_usuario_por_id, usuario_por_correo, lista_usuario]
+lstUsuarioQuery = [usuario_por_id, usuario_por_correo, lista_usuario]
