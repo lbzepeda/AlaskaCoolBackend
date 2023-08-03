@@ -1,10 +1,13 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import det_proforma
+from models.index import det_proforma, productos
 from typing import Optional
 from datetime import datetime
-from decimal import Decimal
+from .productos import Productos
+from strawberry.types import Info
+
+lstProductos = conn.execute(productos.select()).fetchall()
 
 @strawberry.type
 class DetalleProforma:
@@ -15,6 +18,10 @@ class DetalleProforma:
     Modo: str
     FechaFactura: datetime
     Producto: str
+    @strawberry.field
+    def producto(self, info: Info) -> typing.List[Optional[Productos]]:  
+        productos = [Productos(**dict(producto._mapping)) for producto in lstProductos if producto.CodProducto == self.Producto]
+        return productos if productos else []
     UMedida: str
     Cantidad: float
     Bonificacion: float
