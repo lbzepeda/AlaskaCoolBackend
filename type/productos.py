@@ -156,6 +156,10 @@ class Query:
     @strawberry.field
     def producto(CodProducto: str) -> Optional[Productos]:
         return conn.execute(productos.select().where(productos.c.CodProducto == CodProducto)).fetchone()
+    
+    @strawberry.field
+    def servicios(self) -> typing.List[Productos]:
+        return conn.execute(productos.select().where(productos.c.EsServicio == 'S')).fetchall()
 
     @strawberry.field
     def productos(self) -> typing.List[Productos]:
