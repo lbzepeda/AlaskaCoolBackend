@@ -151,16 +151,17 @@ class Productos:
     CodigoAlterno: str
     DerechoAutor: str
 
-@strawberry.type
-class Query:
-    @strawberry.field
-    def producto(CodProducto: str) -> Optional[Productos]:
-        return conn.execute(productos.select().where(productos.c.CodProducto == CodProducto)).fetchone()
-    
-    @strawberry.field
-    def servicios(self) -> typing.List[Productos]:
-        return conn.execute(productos.select().where(productos.c.EsServicio == 'S')).fetchall()
+@strawberry.field
+def producto_por_id(CodProducto: str) -> Optional[Productos]:
+    return conn.execute(productos.select().where(productos.c.CodProducto == CodProducto)).fetchone()
 
-    @strawberry.field
-    def productos(self) -> typing.List[Productos]:
-        return conn.execute(productos.select()).fetchall()
+@strawberry.field
+def lista_servicio(self) -> typing.List[Productos]:
+    return conn.execute(productos.select().where(productos.c.EsServicio == 'S')).fetchall()
+
+@strawberry.field
+def lista_productos(self) -> typing.List[Productos]:
+    return conn.execute(productos.select()).fetchall()
+
+
+lstProductoQuery = [producto_por_id, lista_servicio, lista_productos]

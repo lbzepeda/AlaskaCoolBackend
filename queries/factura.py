@@ -115,8 +115,6 @@ class Factura:
     ValorInteres: float
     IdPromocion: str
 
-
-
 @strawberry.field
 def factura_por_id(NoFactura: str) -> Optional[Factura]:
     return conn.execute(facturas.select().where(facturas.c.NoFactura == NoFactura)).fetchone()
