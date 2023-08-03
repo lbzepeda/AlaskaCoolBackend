@@ -4,6 +4,7 @@ from .cuadrilla import *
 from .tipousuario import *
 from .usuariocuadrilla import *
 from .horarioprogramacion import *
+from .programacion import *
 
 Mutation = create_type("Mutation", lstUsuarioMutation + lstCuadrillaMutation + lstTipoUsuarioMutation + lstUsuarioCuadrillaMutation
-                       + lstHorarioProgramacionMutation)
+                       + lstHorarioProgramacionMutation + lstProgramacionMutation)
