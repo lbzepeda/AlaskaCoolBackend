@@ -59,10 +59,14 @@ class Programacion:
 
 @strawberry.field
 def programacion_por_id(id: int) -> Optional[Programacion]:
-    return conn.execute(programacion.select().where(programacion.c.id == id)).fetchone()
+    result = conn.execute(programacion.select().where(programacion.c.id == id)).fetchone()
+    conn.commit()
+    return result
 
 @strawberry.field
 def lista_programacion(self) -> typing.List[Programacion]:
-    return conn.execute(programacion.select()).fetchall()
+    result = conn.execute(programacion.select()).fetchall()
+    conn.commit()
+    return result
 
 lstProgramacionQuery = [programacion_por_id, lista_programacion]

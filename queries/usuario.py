@@ -42,18 +42,26 @@ class Usuario:
 
 @strawberry.field
 def usuario_por_id(id: int) -> Optional[Usuario]:
-    return conn.execute(usuarios.select().where(usuarios.c.id == id)).fetchone()
+    result = conn.execute(usuarios.select().where(usuarios.c.id == id)).fetchone()
+    conn.commit()
+    return result
+
 @strawberry.field
 def usuario_por_correo(correo: str) -> Optional[Usuario]:
-    query = usuarios.select().where(usuarios.c.correo == correo)
-    return conn.execute(query).fetchone()
+    result = conn.execute(usuarios.select().where(usuarios.c.correo == correo)).fetchone()
+    conn.commit()
+    return result
+
 @strawberry.field
 def lista_usuario(self) -> typing.List[Usuario]:
-    return conn.execute(usuarios.select()).fetchall()
+    result = conn.execute(usuarios.select()).fetchall()
+    conn.commit()
+    return result
 
 @strawberry.field
 def lista_usuarios_tecnicos(self) -> typing.List[Usuario]:
-    return conn.execute(usuarios.select().where(usuarios.c.idTipoUsuario.in_([1, 2, 5]))).fetchall()
-
+    result = conn.execute(usuarios.select().where(usuarios.c.idTipoUsuario.in_([1, 2, 5]))).fetchall()
+    conn.commit()
+    return result
 
 lstUsuarioQuery = [usuario_por_id, usuario_por_correo, lista_usuario, lista_usuarios_tecnicos]

@@ -86,10 +86,14 @@ class Proforma:
 
 @strawberry.field
 def proforma_por_id(NoFactura: str) -> Optional[Proforma]:
-    return conn.execute(proforma.select().where(proforma.c.NoFactura == NoFactura)).fetchone()
+    result = conn.execute(proforma.select().where(proforma.c.NoFactura == NoFactura)).fetchone()
+    conn.commit()
+    return result
 
 @strawberry.field
 def lista_proforma(self) -> typing.List[Proforma]:
-    return conn.execute(proforma.select()).fetchall()
+    result = conn.execute(proforma.select()).fetchall()
+    conn.commit()
+    return result
 
 lstProformaQuery = [proforma_por_id, lista_proforma]

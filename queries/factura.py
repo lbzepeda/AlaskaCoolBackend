@@ -117,10 +117,14 @@ class Factura:
 
 @strawberry.field
 def factura_por_id(NoFactura: str) -> Optional[Factura]:
-    return conn.execute(facturas.select().where(facturas.c.NoFactura == NoFactura)).fetchone()
+    result = conn.execute(facturas.select().where(facturas.c.NoFactura == NoFactura)).fetchone()
+    conn.commit()
+    return result
 
 @strawberry.field
 def lista_factura(self) -> typing.List[Factura]:
-    return conn.execute(facturas.select()).fetchall()
+    result = conn.execute(facturas.select()).fetchall()
+    conn.commit()
+    return result
 
 lstFacturaQuery = [factura_por_id, lista_factura]

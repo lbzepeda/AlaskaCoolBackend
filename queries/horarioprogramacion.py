@@ -14,9 +14,14 @@ class HorarioProgramacion:
 
 @strawberry.field
 def horario_programacion_por_id(id: int) -> HorarioProgramacion:
-    return conn.execute(horario_programacion.select().where(horario_programacion.c.id == id)).fetchone()
+    result = conn.execute(horario_programacion.select().where(horario_programacion.c.id == id)).fetchone()
+    conn.commit()
+    return result
+
 @strawberry.field
 def lista_horarios_programacion(self) -> typing.List[HorarioProgramacion]:
-    return conn.execute(horario_programacion.select()).fetchall()
+    result = conn.execute(horario_programacion.select()).fetchall()
+    conn.commit()
+    return result
 
 lstHorarioProductoQuery = [horario_programacion_por_id, lista_horarios_programacion]

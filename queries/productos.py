@@ -153,15 +153,20 @@ class Productos:
 
 @strawberry.field
 def producto_por_id(CodProducto: str) -> Optional[Productos]:
-    return conn.execute(productos.select().where(productos.c.CodProducto == CodProducto)).fetchone()
+    result = conn.execute(productos.select().where(productos.c.CodProducto == CodProducto)).fetchone()
+    conn.commit()
+    return result
 
 @strawberry.field
 def lista_servicio(self) -> typing.List[Productos]:
-    return conn.execute(productos.select().where(productos.c.EsServicio == 'S')).fetchall()
+    result = conn.execute(productos.select().where(productos.c.EsServicio == 'S')).fetchall()
+    conn.commit()
+    return result
 
 @strawberry.field
 def lista_productos(self) -> typing.List[Productos]:
-    return conn.execute(productos.select()).fetchall()
-
+    result = conn.execute(productos.select()).fetchall()
+    conn.commit()
+    return result
 
 lstProductoQuery = [producto_por_id, lista_servicio, lista_productos]

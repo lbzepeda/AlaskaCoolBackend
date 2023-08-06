@@ -81,9 +81,13 @@ class DetalleFactura:
 
 @strawberry.field
 def detalle_factura_por_id(NoFactura: str) -> typing.List[DetalleFactura]:
-    return conn.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchall()
+    result = conn.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchall()
+    conn.commit()
+    return result
 @strawberry.field
 def detalles_factura(self) -> typing.List[DetalleFactura]:
-    return conn.execute(det_facturas.select()).fetchall()
+    result = conn.execute(det_facturas.select()).fetchall()
+    conn.commit()
+    return result
 
 lstDetalleFacturaQuery = [detalle_factura_por_id, detalles_factura]

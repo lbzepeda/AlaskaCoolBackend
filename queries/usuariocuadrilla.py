@@ -34,9 +34,14 @@ class UsuarioCuadrilla:
         
 @strawberry.field
 def usuario_cuadrilla_por_id(id: int) -> UsuarioCuadrilla:
-    return conn.execute(usuario_cuadrilla.select().where(usuario_cuadrilla.c.id == id)).fetchone()
+    result = conn.execute(usuario_cuadrilla.select().where(usuario_cuadrilla.c.id == id)).fetchone()
+    conn.commit()
+    return result
+
 @strawberry.field
 def lista_usuario_cuadrilla(self) -> typing.List[UsuarioCuadrilla]:
-    return conn.execute(usuario_cuadrilla.select()).fetchall()
+    result = conn.execute(usuario_cuadrilla.select()).fetchall()
+    conn.commit()
+    return result
 
 lstUsuarioCuadrillaQuery = [usuario_cuadrilla_por_id, lista_usuario_cuadrilla]
