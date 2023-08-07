@@ -1,11 +1,9 @@
-import typing
 import strawberry
 from conn.db import conn
 from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion
 from strawberry.types import Info
 from datetime import datetime
 from typing import Optional
-from decimal import Decimal
 import os
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -16,7 +14,6 @@ import datetime
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from datetime import timedelta
-
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
