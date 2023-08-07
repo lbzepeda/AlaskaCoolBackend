@@ -15,4 +15,5 @@ programacion = Table('programacion', meta,
     Column('UrlGeoLocalizacion', Text),
     Column('direccion', Text, nullable=True),
     Column('observaciones', Text, nullable=True),
+    Column('idDepartamento', Integer, ForeignKey('departamentos.id'))
 )

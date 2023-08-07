@@ -10,6 +10,7 @@ from .tipousuario import *
 from .usuariocuadrilla import *
 from .horarioprogramacion import *
 from .programacion import *
+from .departamentos import *
 
 Query = create_type("Query", lstUsuarioQuery + lstCuadrillaQuery + lstDetalleFacturaQuery + lstDetalleProformaQuery + lstFacturaQuery + lstProductoQuery
-                    + lstProformaQuery + lstTipoUsuarioQuery + lstUsuarioCuadrillaQuery + lstHorarioProductoQuery + lstProgramacionQuery)
+                    + lstProformaQuery + lstTipoUsuarioQuery + lstUsuarioCuadrillaQuery + lstHorarioProductoQuery + lstProgramacionQuery + lstDepartamentosQuery)

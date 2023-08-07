@@ -1,7 +1,7 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion
+from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion, departamentos
 from strawberry.types import Info
 from typing import Optional
 from .proforma import Proforma
@@ -9,6 +9,7 @@ from .factura import Factura
 from .productos import Productos
 from .usuariocuadrilla import UsuarioCuadrilla
 from .horarioprogramacion import HorarioProgramacion
+from .departamentos import Departamentos
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
@@ -19,6 +20,7 @@ lstUsuario_Cuadrilla = conn.execute(usuario_cuadrilla.select()).fetchall()
 lstFacturas = conn.execute(facturas.select()).fetchall()
 lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
 lstHorarioProgramacion = conn.execute(horario_programacion.select()).fetchall()
+lstDepartamentos = conn.execute(departamentos.select()).fetchall()
 
 @strawberry.type
 class Programacion:
@@ -53,6 +55,11 @@ class Programacion:
     UrlGeoLocalizacion: str
     direccion: Optional[str]
     observaciones: Optional[str]
+    idDepartamento: int
+    @strawberry.field
+    def departamento(self, info: Info) -> Optional[Departamentos]:  
+        departamento = [Departamentos(**dict(departamento._mapping)) for departamento in lstDepartamentos if departamento and departamento.id == self.idDepartamento]
+        return departamento[0] if departamento else None
     @classmethod
     def from_row(cls, row):
         return cls(**row)

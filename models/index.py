@@ -12,5 +12,6 @@ from models.detalleproforma import det_proforma
 from models.proforma import proforma
 from models.horarioprogramacion import horario_programacion
 from models.programacion import programacion
+from models.departamentos import departamentos
 
 meta.create_all(engine)
