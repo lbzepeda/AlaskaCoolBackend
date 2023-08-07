@@ -39,9 +39,14 @@ def create_google_calendar_event(horario_row, servicio):
     service = build('calendar', 'v3', credentials=creds)
     
     # Combina la fecha y hora para tener un datetime completo
-    start_datetime = horario_row.fechainicio + timedelta(hours=horario_row.horainicio.hour, minutes=horario_row.horainicio.minute, seconds=horario_row.horainicio.second)
-    end_datetime = horario_row.fechafin + timedelta(hours=horario_row.horafin.hour, minutes=horario_row.horafin.minute, seconds=horario_row.horafin.second)
-    
+    # Combina la fecha y hora para tener un datetime completo
+    start_datetime = horario_row.fechainicio.replace(hour=horario_row.horainicio.hour, minute=horario_row.horainicio.minute, second=horario_row.horainicio.second)
+    end_datetime = horario_row.fechafin.replace(hour=horario_row.horafin.hour, minute=horario_row.horafin.minute, second=horario_row.horafin.second)
+
+    print(horario_row)
+    print(f"start_datetime {start_datetime}")
+    print(f"start_datetime {end_datetime}")
+
     # Evento a crear
     event = {
         'summary': servicio.descripcion,  # Puedes personalizar este texto
