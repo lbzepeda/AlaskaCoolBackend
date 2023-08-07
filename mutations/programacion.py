@@ -10,7 +10,7 @@ from slack_sdk.errors import SlackApiError
 import ssl
 from dotenv import load_dotenv
 from datetime import time
-import datetime
+from datetime import datetime
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from datetime import timedelta
