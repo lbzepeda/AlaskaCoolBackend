@@ -12,6 +12,11 @@ from slack_sdk.errors import SlackApiError
 import ssl
 from dotenv import load_dotenv
 from datetime import time
+import datetime
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from datetime import timedelta
+
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
@@ -27,6 +32,40 @@ load_dotenv()
 slack_token = os.getenv('SLACK_TOKEN')
 ssl._create_default_https_context = ssl._create_unverified_context
 client = WebClient(token=slack_token)
+
+def create_google_calendar_event(horario_row, servicio):
+    # Carga las credenciales de la cuenta de servicio
+    creds = Credentials.from_service_account_file('alaskacool-ee34eec8f111.json', 
+                                                  scopes=['https://www.googleapis.com/auth/calendar'])
+
+    # Usa las credenciales para acceder al servicio de Google Calendar
+    service = build('calendar', 'v3', credentials=creds)
+    
+    # Combina la fecha y hora para tener un datetime completo
+    start_datetime = horario_row.fechainicio + timedelta(hours=horario_row.horainicio.hour, minutes=horario_row.horainicio.minute, seconds=horario_row.horainicio.second)
+    end_datetime = horario_row.fechafin + timedelta(hours=horario_row.horafin.hour, minutes=horario_row.horafin.minute, seconds=horario_row.horafin.second)
+    
+    # Evento a crear
+    event = {
+        'summary': servicio.descripcion,  # Puedes personalizar este texto
+        'description': 'Descripción del servicio programado',  # Puedes personalizar este texto
+        'start': {
+            'dateTime': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
+            'timeZone': 'America/Managua',
+        },
+        'end': {
+            'dateTime': end_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
+            'timeZone': 'America/Managua',
+        },
+    }
+
+    calendar_id = 'bdb1c1dd54cb4991313cbcfda21f549b35e0d40f0103f06812e8dc86f5b20a91@group.calendar.google.com'
+
+    # Usa el método insert del servicio de calendar para crear el evento
+    created_event = service.events().insert(calendarId=calendar_id, body=event).execute()
+    print(f"Evento calendario: {created_event['id']}")
+    return created_event['id']  # Retorna el ID del evento creado
+
 
 def send_message(text: str):
     try:
@@ -248,6 +287,8 @@ async def crear_programacion(
     usuario = Usuario.from_row(usuario_row)
     horario = HorarioProgramacion.from_row(horario_row)
 
+    create_google_calendar_event(horario_row, servicio)
+    
     text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, para el dia {horario.fechainicio.strftime('%Y-%m-%d')} a las {horario.horainicio.strftime('%H:%M')}."
 
     print(f"texto {text}")
