@@ -273,8 +273,6 @@ async def crear_programacion(
         "codcliente": codcliente,
         "codfactura": codfactura,
         "codproforma": codproforma,
-        "idCuadrilla": idCuadrilla,
-        "idHorarioProgramacion": idHorarioProgramacion,
         "direccion": direccion,
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
@@ -283,15 +281,17 @@ async def crear_programacion(
     
     usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioCreacion)).fetchone()
     servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
-    horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
+    #horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
 
     servicio = Productos.from_row(servicio_row)
     usuario = Usuario.from_row(usuario_row)
-    horario = HorarioProgramacion.from_row(horario_row)
+    #horario = HorarioProgramacion.from_row(horario_row)
 
-    create_google_calendar_event(horario_row, servicio)
+    #create_google_calendar_event(horario_row, servicio)
+    #text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, para el dia {horario.fechainicio.strftime('%Y-%m-%d')} a las {horario.horainicio.strftime('%H:%M')}."
     
-    text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, para el dia {horario.fechainicio.strftime('%Y-%m-%d')} a las {horario.horainicio.strftime('%H:%M')}."
+    ref_value = codfactura if codfactura else codproforma
+    text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignacion de horario y cuadrilla."
 
     print(f"texto {text}")
     send_message(text)
