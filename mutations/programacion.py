@@ -260,11 +260,10 @@ async def crear_programacion(
     codcliente: Optional[str] = None, 
     codfactura: Optional[str] = None, 
     codproforma: Optional[str] = None,
-    idCuadrilla: Optional[int] = None, 
-    idHorarioProgramacion: Optional[int] = None,
     direccion: Optional[str] = None,
     observaciones: Optional[str] = None,
-    idDepartamento: Optional[int] = None) -> int:
+    idDepartamento: Optional[int] = None,
+    idEstadoProgramacion: Optional[int] = None) -> int:
     
     data_programacion = {
         "codservicio": codservicio,
@@ -276,6 +275,7 @@ async def crear_programacion(
         "direccion": direccion,
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
+        "idEstadoProgramacion": idEstadoProgramacion,
     }
     result = conn.execute(programacion.insert(), data_programacion)
     
@@ -311,7 +311,8 @@ def actualizar_programacion(self, id: int,
     idHorarioProgramacion: Optional[int] = None,
     direccion: Optional[str] = None,
     observaciones: Optional[str] = None,
-    idDepartamento: Optional[int] = None) -> str:
+    idDepartamento: Optional[int] = None,
+    idEstadoProgramacion: Optional[int] = None) -> str:
     result = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codservicio": codservicio,
         "idUsuarioCreacion": idUsuarioCreacion,
@@ -324,6 +325,7 @@ def actualizar_programacion(self, id: int,
         "direccion": direccion,
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
+        "idEstadoProgramacion": idEstadoProgramacion,
     })
     print(result. returns_rows)
     conn.commit()

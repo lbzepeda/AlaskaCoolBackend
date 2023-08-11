@@ -13,5 +13,6 @@ from models.proforma import proforma
 from models.horarioprogramacion import horario_programacion
 from models.programacion import programacion
 from models.departamentos import departamentos
+from models.estadoprogramacion import estado_programacion
 
 meta.create_all(engine)

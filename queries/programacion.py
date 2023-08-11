@@ -1,7 +1,7 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion, departamentos
+from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion, departamentos, estado_programacion
 from strawberry.types import Info
 from typing import Optional
 from .proforma import Proforma
@@ -10,6 +10,7 @@ from .productos import Productos
 from .usuariocuadrilla import UsuarioCuadrilla
 from .horarioprogramacion import HorarioProgramacion
 from .departamentos import Departamentos
+from .estadoprogramacion import EstadoProgramacion
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
@@ -21,6 +22,7 @@ lstFacturas = conn.execute(facturas.select()).fetchall()
 lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
 lstHorarioProgramacion = conn.execute(horario_programacion.select()).fetchall()
 lstDepartamentos = conn.execute(departamentos.select()).fetchall()
+lstEstadoProgramacion = conn.execute(estado_programacion.select()).fetchall()
 
 @strawberry.type
 class Programacion:
@@ -60,6 +62,11 @@ class Programacion:
     def departamento(self, info: Info) -> Optional[Departamentos]:  
         departamento = [Departamentos(**dict(departamento._mapping)) for departamento in lstDepartamentos if departamento and departamento.id == self.idDepartamento]
         return departamento[0] if departamento else None
+    idEstadoProgramacion: int
+    @strawberry.field
+    def estado_programacion(self, info: Info) -> Optional[EstadoProgramacion]:  
+        estadoprogramacion = [EstadoProgramacion(**dict(estadoprogramacion._mapping)) for estadoprogramacion in lstEstadoProgramacion if estadoprogramacion and estadoprogramacion.id == self.idEstadoProgramacion]
+        return estadoprogramacion[0] if estadoprogramacion else None
     @classmethod
     def from_row(cls, row):
         return cls(**row)
