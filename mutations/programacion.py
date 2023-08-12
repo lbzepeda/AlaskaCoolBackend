@@ -334,8 +334,8 @@ def actualizar_programacion(self, id: int,
     usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioActualizador)).fetchone()
 
     usuario = Usuario.from_row(usuario_row)
-
     ref_value = codfactura if codfactura else codproforma
+    
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
     send_message(text)
 
