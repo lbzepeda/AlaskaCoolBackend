@@ -291,10 +291,11 @@ async def crear_programacion(
     #text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, para el dia {horario.fechainicio.strftime('%Y-%m-%d')} a las {horario.horainicio.strftime('%H:%M')}."
     
     ref_value = codfactura if codfactura else codproforma
-    text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignacion de horario y cuadrilla."
+    id_value = result.inserted_primary_key[0]
+    text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. Puedes verlo aquí: https://alaska-cool-programacion.vercel.app/registerprograming/{id_value}"
 
     print(f"texto {text}")
-    #send_message(text)
+    send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
 
