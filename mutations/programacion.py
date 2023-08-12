@@ -294,7 +294,7 @@ async def crear_programacion(
     text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignacion de horario y cuadrilla."
 
     print(f"texto {text}")
-    send_message(text)
+    #send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
 
