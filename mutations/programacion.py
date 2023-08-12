@@ -313,7 +313,8 @@ def actualizar_programacion(self, id: int,
     direccion: Optional[str] = None,
     observaciones: Optional[str] = None,
     idDepartamento: Optional[int] = None,
-    idEstadoProgramacion: Optional[int] = None) -> str:
+    idEstadoProgramacion: Optional[int] = None,
+    idUsuarioActualizador: Optional[int] = None) -> str:
     result = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codservicio": codservicio,
         "idUsuarioCreacion": idUsuarioCreacion,
@@ -329,6 +330,15 @@ def actualizar_programacion(self, id: int,
         "idEstadoProgramacion": idEstadoProgramacion,
     })
     print(result. returns_rows)
+
+    usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioActualizador)).fetchone()
+
+    usuario = Usuario.from_row(usuario_row)
+
+    ref_value = codfactura if codfactura else codproforma
+    text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
+    send_message(text)
+
     conn.commit()
     return str(result.rowcount) + " Row(s) updated"
 
