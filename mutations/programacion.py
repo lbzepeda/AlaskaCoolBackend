@@ -334,8 +334,13 @@ def actualizar_programacion(self, id: int,
     usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioActualizador)).fetchone()
 
     usuario = Usuario.from_row(usuario_row)
+    horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
+    servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
+
+    servicio = Productos.from_row(servicio_row)
+    create_google_calendar_event(horario_row, servicio)
     ref_value = codfactura if codfactura else codproforma
-    
+
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
     send_message(text)
 
