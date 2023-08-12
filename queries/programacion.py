@@ -11,6 +11,7 @@ from .usuariocuadrilla import UsuarioCuadrilla
 from .horarioprogramacion import HorarioProgramacion
 from .departamentos import Departamentos
 from .estadoprogramacion import EstadoProgramacion
+from .usuario import Usuario
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
@@ -44,6 +45,10 @@ class Programacion:
         proformas = [Proforma(**dict(proforma._mapping)) for proforma in lstProforma if proforma and proforma.NoFactura == self.codproforma]
         return proformas[0] if proformas else None
     idUsuarioCreacion: int
+    @strawberry.field
+    def usuario_creacion(self, info: Info) -> Optional[Usuario]:  
+        usuariocreador = [Usuario(**dict(usuariocreador._mapping)) for usuariocreador in lstUsuarios if usuariocreador and usuariocreador.id == self.idUsuarioCreacion]
+        return usuariocreador[0] if usuariocreador else None
     idCuadrilla: Optional[int] = None
     @strawberry.field
     def cuadrilla(self, info: Info) -> typing.List[Optional[UsuarioCuadrilla]]:  
