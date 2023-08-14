@@ -339,12 +339,15 @@ def actualizar_programacion(self, id: int,
     horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
     servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
     
+    facturaobj = None
+    proformaobj = None
+
     if codfactura:
         facturaobj = conn.execute(facturas.select().where(facturas.c.NoFactura == codfactura)).fetchone()
-        referencia = codfactura
     elif codproforma:
         proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == codproforma)).fetchone()
-        referencia = codproforma
+
+    referencia = codfactura if codfactura else codproforma
 
     servicio = Productos.from_row(servicio_row)
     create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
