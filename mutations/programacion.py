@@ -40,8 +40,6 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
 
     cliente = facturaobj.Nombrede if facturaobj else (proformaobj.Nombrede if proformaobj else "")
 
-    # Combina la fecha y hora para tener un datetime completo
-    # Combina la fecha y hora para tener un datetime completo
     start_datetime = horario_row.fechainicio.replace(hour=horario_row.horainicio.hour, minute=horario_row.horainicio.minute, second=horario_row.horainicio.second)
     end_datetime = horario_row.fechafin.replace(hour=horario_row.horafin.hour, minute=horario_row.horafin.minute, second=horario_row.horafin.second)
 
