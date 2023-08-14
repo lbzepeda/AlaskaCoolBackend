@@ -49,7 +49,6 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
     UrlGeoLocalizacion = UrlGeoLocalizacion if UrlGeoLocalizacion else "N/A"
     observaciones = observaciones if observaciones else "N/A"
 
-
     # Evento a crear
     event = {
         'summary': cliente + ' - ' + servicio.descripcion,  # Puedes personalizar este texto
@@ -298,7 +297,7 @@ async def crear_programacion(
     text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id_value}"
 
     print(f"texto {text}")
-    send_message(text)
+    #send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
 
