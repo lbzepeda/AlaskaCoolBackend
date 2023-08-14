@@ -254,7 +254,7 @@ class HorarioProgramacion:
 async def crear_programacion(
     self, 
     codservicio: str, 
-    idUsuarioCreacion: int, 
+    idUsuarioCreacion: Optional[int],
     UrlGeoLocalizacion: str, 
     info: Info,
     codcliente: Optional[str] = None, 
