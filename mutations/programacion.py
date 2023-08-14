@@ -263,6 +263,7 @@ async def crear_programacion(
     direccion: Optional[str] = None,
     observaciones: Optional[str] = None,
     idDepartamento: Optional[int] = None,
+    idHorarioProgramacion: Optional[int] = None,
     idEstadoProgramacion: Optional[int] = None) -> int:
     
     data_programacion = {
@@ -276,6 +277,7 @@ async def crear_programacion(
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
+        "idHorarioProgramacion": idHorarioProgramacion
     }
     result = conn.execute(programacion.insert(), data_programacion)
     
