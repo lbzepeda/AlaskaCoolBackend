@@ -30,7 +30,7 @@ slack_token = os.getenv('SLACK_TOKEN')
 ssl._create_default_https_context = ssl._create_unverified_context
 client = WebClient(token=slack_token)
 
-def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones):
+def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
     # Carga las credenciales de la cuenta de servicio
     creds = Credentials.from_service_account_file('alaskacool-ee34eec8f111.json', 
                                                   scopes=['https://www.googleapis.com/auth/calendar'])
@@ -51,7 +51,7 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
 
     # Evento a crear
     event = {
-        'summary': cliente + ' - ' + servicio.descripcion,  # Puedes personalizar este texto
+        'summary': cliente + ' - ' + servicio.descripcion + ' - Referencia: ' + referencia,  # Puedes personalizar este texto
         'description':  f'Direccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}',  # Puedes personalizar este texto
         'start': {
             'dateTime': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
@@ -341,11 +341,13 @@ def actualizar_programacion(self, id: int,
     
     if codfactura:
         facturaobj = conn.execute(facturas.select().where(facturas.c.NoFactura == codfactura)).fetchone()
+        referencia = codfactura
     elif codproforma:
         proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == codproforma)).fetchone()
+        referencia = codproforma
 
     servicio = Productos.from_row(servicio_row)
-    create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones)
+    create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
     ref_value = codfactura if codfactura else codproforma
 
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
