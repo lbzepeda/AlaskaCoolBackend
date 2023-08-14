@@ -45,6 +45,11 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
     start_datetime = horario_row.fechainicio.replace(hour=horario_row.horainicio.hour, minute=horario_row.horainicio.minute, second=horario_row.horainicio.second)
     end_datetime = horario_row.fechafin.replace(hour=horario_row.horafin.hour, minute=horario_row.horafin.minute, second=horario_row.horafin.second)
 
+    direccion = direccion if direccion else "N/A"
+    UrlGeoLocalizacion = UrlGeoLocalizacion if UrlGeoLocalizacion else "N/A"
+    observaciones = observaciones if observaciones else "N/A"
+
+
     # Evento a crear
     event = {
         'summary': cliente + ' - ' + servicio.descripcion,  # Puedes personalizar este texto
