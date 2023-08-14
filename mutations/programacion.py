@@ -30,27 +30,25 @@ slack_token = os.getenv('SLACK_TOKEN')
 ssl._create_default_https_context = ssl._create_unverified_context
 client = WebClient(token=slack_token)
 
-def create_google_calendar_event(horario_row, servicio):
+def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones):
     # Carga las credenciales de la cuenta de servicio
     creds = Credentials.from_service_account_file('alaskacool-ee34eec8f111.json', 
                                                   scopes=['https://www.googleapis.com/auth/calendar'])
 
     # Usa las credenciales para acceder al servicio de Google Calendar
     service = build('calendar', 'v3', credentials=creds)
-    
+
+    cliente = facturaobj.Nombrede if facturaobj else (proformaobj.Nombrede if proformaobj else "")
+
     # Combina la fecha y hora para tener un datetime completo
     # Combina la fecha y hora para tener un datetime completo
     start_datetime = horario_row.fechainicio.replace(hour=horario_row.horainicio.hour, minute=horario_row.horainicio.minute, second=horario_row.horainicio.second)
     end_datetime = horario_row.fechafin.replace(hour=horario_row.horafin.hour, minute=horario_row.horafin.minute, second=horario_row.horafin.second)
 
-    print(horario_row)
-    print(f"start_datetime {start_datetime}")
-    print(f"start_datetime {end_datetime}")
-
     # Evento a crear
     event = {
-        'summary': servicio.descripcion,  # Puedes personalizar este texto
-        'description': 'Descripción del servicio programado',  # Puedes personalizar este texto
+        'summary': cliente + ' - ' + servicio.descripcion,  # Puedes personalizar este texto
+        'description':  f'Direccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}',  # Puedes personalizar este texto
         'start': {
             'dateTime': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
             'timeZone': 'America/Managua',
@@ -336,9 +334,14 @@ def actualizar_programacion(self, id: int,
     usuario = Usuario.from_row(usuario_row)
     horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
     servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
+    
+    if codfactura:
+        facturaobj = conn.execute(facturas.select().where(facturas.c.NoFactura == codfactura)).fetchone()
+    elif codproforma:
+        proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == codproforma)).fetchone()
 
     servicio = Productos.from_row(servicio_row)
-    create_google_calendar_event(horario_row, servicio)
+    create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones)
     ref_value = codfactura if codfactura else codproforma
 
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
