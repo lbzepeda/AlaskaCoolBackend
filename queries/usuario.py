@@ -1,10 +1,16 @@
 import strawberry
-import typing
 from typing import Optional
 from conn.db import conn
-from models.index import usuarios, estados, tipo_usuario
+import typing
+from models.index import usuarios
+from models.index import estados
+from models.index import tipo_usuario
+import strawberry
 from strawberry.types import Info
 from .tipousuario import TipoUsuario
+
+lstEstados = conn.execute(estados.select()).fetchall()
+lstTipoUsuario = conn.execute(tipo_usuario.select()).fetchall()
 
 @strawberry.type
 class Estado:
@@ -18,24 +24,21 @@ class Usuario:
     nombre: str
     correo: str
     idTipoUsuario: int
-
     @strawberry.field
-    def tipo_usuario(self, info: Info) -> TipoUsuario:
-        lstTipoUsuario = conn.execute(tipo_usuario.select()).fetchall()
+    def tipo_usuario(self, info: Info) -> TipoUsuario:  
         tipoUsuario = next((tipoUsuario for tipoUsuario in lstTipoUsuario if tipoUsuario.id == self.idTipoUsuario), None)
         if tipoUsuario:
             return TipoUsuario(**dict(tipoUsuario._mapping))
-        return None
-
+        else:
+            return None
     idEstado: int
-
     @strawberry.field
-    def estado(self, info: Info) -> Estado:
-        lstEstados = conn.execute(estados.select()).fetchall()
+    def estado(self, info: Info) -> Estado:  
         estado = next((estado for estado in lstEstados if estado.id == self.idEstado), None)
         if estado:
             return Estado(**dict(estado._mapping))
-        return None
+        else:
+            return None
 
 @strawberry.field
 def usuario_por_id(id: int) -> Optional[Usuario]:

@@ -1,25 +1,21 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import det_facturas, facturas
+from models.index import det_facturas, productos, facturas
 from strawberry.types import Info
 from typing import Optional
 from datetime import datetime
 from .detallefactura import *
 
+lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
+
 @strawberry.type
 class Factura:
     NoFactura: str
     @strawberry.field
-    def det_factura(self, info: Info) -> typing.List[Optional[DetalleFactura]]:
-        current_det_facturas = conn.execute(det_facturas.select()).fetchall()
-        
-        matching_details = [
-            DetalleFactura(**dict(detail._mapping))
-            for detail in current_det_facturas
-            if detail.NoFactura == self.NoFactura
-        ]
-        return matching_details or []
+    def det_factura(self, info: Info) -> typing.List[Optional[DetalleFactura]]:  
+        detFacturas = [DetalleFactura(**dict(detFactura._mapping)) for detFactura in lstDetFacturas if detFactura.NoFactura == self.NoFactura]
+        return detFacturas if detFacturas else []
     Serie: str
     Tipo: str
     Modo: str
