@@ -7,8 +7,6 @@ from datetime import datetime
 from .productos import Productos
 from strawberry.types import Info
 
-lstProductos = conn.execute(productos.select()).fetchall()
-
 @strawberry.type
 class DetalleProforma:
     Sucursal: str
@@ -18,10 +16,10 @@ class DetalleProforma:
     Modo: str
     FechaFactura: datetime
     Producto: str
-    @strawberry.field
-    def producto(self, info: Info) -> typing.List[Optional[Productos]]:  
-        productos = [Productos(**dict(producto._mapping)) for producto in lstProductos if producto.CodProducto == self.Producto]
-        return productos if productos else []
+    def producto(self, info: Info) -> Productos:
+        lstProductos = conn.execute(productos.select().where(productos.c.CodProducto == self.Producto)).fetchall()
+        matched_producto = next((Productos(**dict(producto._mapping)) for producto in lstProductos), None)
+        return matched_producto
     UMedida: str
     Cantidad: float
     Bonificacion: float

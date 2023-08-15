@@ -8,7 +8,6 @@ from datetime import datetime
 from .detallefactura import *
 
 lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
-lstProductos = conn.execute(productos.select()).fetchall()
 
 @strawberry.type
 class Factura:

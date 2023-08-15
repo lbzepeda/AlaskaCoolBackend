@@ -5,8 +5,6 @@ import typing
 from models.index import departamentos
 import strawberry
 
-lstDepartamentos = conn.execute(departamentos.select()).fetchall()
-
 @strawberry.type
 class Departamentos:
     id: int
