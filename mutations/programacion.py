@@ -350,14 +350,11 @@ def actualizar_programacion(self, id: int,
     facturaobj = None
     proformaobj = None
 
-
-    proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == codproforma)).fetchone()
+    referencia = codfactura if codfactura else codproforma
+    proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == referencia)).fetchone()
 
     if not proformaobj:
-        facturaobj = conn.execute(facturas.select().where(facturas.c.NoFactura == codfactura)).fetchone()
-
-
-    referencia = codfactura if codfactura else codproforma
+        facturaobj = conn.execute(facturas.select().where(facturas.c.NoFactura == referencia)).fetchone()
 
     servicio = Productos.from_row(servicio_row)
 
