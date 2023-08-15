@@ -291,21 +291,17 @@ async def crear_programacion(
     
     usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioCreacion)).fetchone()
     servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
-    #horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
 
     servicio = Productos.from_row(servicio_row)
-    usuario = Usuario.from_row(usuario_row)
-    #horario = HorarioProgramacion.from_row(horario_row)
+    usuario = Usuario.from_row(usuario_row) 
 
-    #create_google_calendar_event(horario_row, servicio)
-    #text = f"El usuario *{usuario.nombre}* creo una nueva programación para el servicio *{servicio.descripcion}*, para el dia {horario.fechainicio.strftime('%Y-%m-%d')} a las {horario.horainicio.strftime('%H:%M')}."
-    
     ref_value = codfactura if codfactura else codproforma
     id_value = result.inserted_primary_key[0]
     text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id_value}"
 
     print(f"texto {text}")
-    send_message(text)
+    if idUsuarioCreacion != 1:
+        send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
 
@@ -363,7 +359,9 @@ def actualizar_programacion(self, id: int,
     ref_value = codfactura if codfactura else codproforma
 
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
-    send_message(text)
+
+    if idUsuarioActualizador != 1:
+        send_message(text)
 
     conn.commit()
     return str(result.rowcount) + " Row(s) updated"
