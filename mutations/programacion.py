@@ -297,7 +297,7 @@ async def crear_programacion(
     text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id_value}"
 
     print(f"texto {text}")
-    send_message(text)
+    #send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
 
@@ -342,6 +342,7 @@ def actualizar_programacion(self, id: int,
     facturaobj = None
     proformaobj = None
 
+
     proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == codproforma)).fetchone()
 
     if not proformaobj:
@@ -355,7 +356,7 @@ def actualizar_programacion(self, id: int,
     ref_value = codfactura if codfactura else codproforma
 
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
-    send_message(text)
+    #send_message(text)
 
     conn.commit()
     return str(result.rowcount) + " Row(s) updated"
