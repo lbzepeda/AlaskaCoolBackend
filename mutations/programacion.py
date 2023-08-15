@@ -14,6 +14,14 @@ from datetime import datetime
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from datetime import timedelta
+from enum import Enum
+
+class TipoUsuario(Enum):
+    Tecnico = 1
+    Ayudante = 2
+    GerenteDeVenta = 3
+    Vendedor = 4
+    SupervisorTecnico = 5
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
@@ -352,7 +360,9 @@ def actualizar_programacion(self, id: int,
     referencia = codfactura if codfactura else codproforma
 
     servicio = Productos.from_row(servicio_row)
-    create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
+    
+    if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
+        create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
     ref_value = codfactura if codfactura else codproforma
 
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
