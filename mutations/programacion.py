@@ -402,10 +402,8 @@ def eliminar_programacion(self, id: int,
     if event_row and event_row.CodeGoogleCalendar:
         delete_google_calendar_event(event_row.CodeGoogleCalendar)
 
-    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
-        "idEstado": 2
-    })
-
+    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id).values(idEstado=2))
+    
     text = f"El usuario *{usuario.nombre}* ELIMINO programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
     notify_update(idUsuarioActualizador, text)
     
@@ -428,6 +426,7 @@ def actualizar_programacion(self, id: int,
     idDepartamento: Optional[int] = None,
     idEstadoProgramacion: Optional[int] = None,
     idUsuarioActualizador: Optional[int] = None) -> str:
+    
     result = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codservicio": codservicio,
         "idUsuarioCreacion": idUsuarioCreacion,
@@ -441,6 +440,7 @@ def actualizar_programacion(self, id: int,
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
+        
     })
 
     usuario = get_usuario(idUsuarioActualizador)

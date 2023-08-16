@@ -5,6 +5,8 @@ from models.index import programacion, productos, proforma, usuarios, usuario_cu
 from strawberry.types import Info
 from typing import Optional
 from sqlalchemy import and_
+from sqlalchemy.sql import func
+from sqlalchemy import select
 from .proforma import Proforma
 from .factura import Factura
 from .productos import Productos
