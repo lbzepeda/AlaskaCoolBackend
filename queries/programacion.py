@@ -19,22 +19,22 @@ class Programacion:
     codservicio: str
     @strawberry.field
     def servicio(self, info: Info) -> typing.List[Optional[Productos]]:
-        current_productos = conn.execute(productos.select()).fetchall()
-        matching_products = [Productos(**dict(producto._mapping)) for producto in current_productos if producto.CodProducto == self.codservicio]
-        return matching_products or []
+        matching_products_query = productos.select().where(productos.c.CodProducto == self.codservicio)
+        result = conn.execute(matching_products_query).fetchall()
+        return [Productos(**dict(producto._mapping)) for producto in result]
     codcliente: Optional[str] = None
     codfactura: Optional[str] = None
     @strawberry.field
     def factura(self, info: Info) -> Optional[Factura]:
-        current_facturas = conn.execute(facturas.select()).fetchall()
-        matching_facturas = [Factura(**dict(factura._mapping)) for factura in current_facturas if factura.NoFactura == self.codfactura]
-        return matching_facturas[0] if matching_facturas else None
+        matching_factura_query = facturas.select().where(facturas.c.NoFactura == self.codfactura)
+        result = conn.execute(matching_factura_query).fetchone()
+        return Factura(**dict(result._mapping)) if result else None
     codproforma: Optional[str] = None
     @strawberry.field
     def proforma(self, info: Info) -> Optional[Proforma]:
-        current_proformas = conn.execute(proforma.select()).fetchall()
-        matching_proformas = [Proforma(**dict(proforma._mapping)) for proforma in current_proformas if proforma.NoFactura == self.codproforma]
-        return matching_proformas[0] if matching_proformas else None
+        matching_proforma_query = proforma.select().where(proforma.c.NoFactura == self.codproforma)
+        result = conn.execute(matching_proforma_query).fetchone()
+        return Proforma(**dict(result._mapping)) if result else None
     idUsuarioCreacion: int
     @strawberry.field
     def usuario_creacion(self, info: Info) -> Optional[Usuario]:
