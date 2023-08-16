@@ -9,9 +9,6 @@ import strawberry
 from strawberry.types import Info
 from .tipousuario import TipoUsuario
 
-lstEstados = conn.execute(estados.select()).fetchall()
-lstTipoUsuario = conn.execute(tipo_usuario.select()).fetchall()
-
 @strawberry.type
 class Estado:
     id: int
@@ -25,20 +22,28 @@ class Usuario:
     correo: str
     idTipoUsuario: int
     @strawberry.field
-    def tipo_usuario(self, info: Info) -> TipoUsuario:  
-        tipoUsuario = next((tipoUsuario for tipoUsuario in lstTipoUsuario if tipoUsuario.id == self.idTipoUsuario), None)
+    def tipo_usuario(self, info: Info) -> TipoUsuario:
+        current_tipoUsuarios = conn.execute(tipo_usuario.select()).fetchall()
+        
+        tipoUsuario = next(
+            (tipoUsuario for tipoUsuario in current_tipoUsuarios if tipoUsuario.id == self.idTipoUsuario), 
+            None
+        )
         if tipoUsuario:
             return TipoUsuario(**dict(tipoUsuario._mapping))
-        else:
-            return None
+        return None
     idEstado: int
     @strawberry.field
     def estado(self, info: Info) -> Estado:  
-        estado = next((estado for estado in lstEstados if estado.id == self.idEstado), None)
+        current_estados = conn.execute(estados.select()).fetchall()
+        
+        estado = next(
+            (estado for estado in current_estados if estado.id == self.idEstado),
+            None
+        )
         if estado:
             return Estado(**dict(estado._mapping))
-        else:
-            return None
+        return None
 
 @strawberry.field
 def usuario_por_id(id: int) -> Optional[Usuario]:
