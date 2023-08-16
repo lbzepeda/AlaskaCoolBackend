@@ -384,10 +384,9 @@ def get_proforma_or_factura(referencia):
 
 def update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
     codeCalenderEvent = create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
-    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
-        "codeGoogleCalendar": codeCalenderEvent
+    conn.execute(programacion.update().where(programacion.c.id == id), {
+        "CodeGoogleCalendar": codeCalenderEvent
     })
-    return resultUpd
 
 def notify_update(idUsuarioActualizador, text):
     if idUsuarioActualizador != 1:
