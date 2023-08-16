@@ -4,6 +4,7 @@ from conn.db import conn
 from models.index import programacion, productos, proforma, usuarios, usuario_cuadrilla, facturas, horario_programacion, departamentos, estado_programacion
 from strawberry.types import Info
 from typing import Optional
+from sqlalchemy import and_
 from .proforma import Proforma
 from .factura import Factura
 from .productos import Productos
@@ -75,14 +76,14 @@ class Programacion:
 
 @strawberry.field
 def programacion_por_id(id: int) -> Optional[Programacion]:
-    result = conn.execute(programacion.select().where(programacion.c.id == id)).fetchone()
+    result = conn.execute(programacion.select().where(and_(programacion.c.id == id, programacion.c.idEstado == 1))).fetchone()
     conn.commit()
     return result
 
 @strawberry.field
 def lista_programacion(self, page: int = 1, perPage: int = 10) -> typing.List[Programacion]:
     offset = (page - 1) * perPage
-    query = programacion.select().order_by(programacion.c.id.desc()).limit(perPage).offset(offset)
+    query = programacion.select().where(programacion.c.idEstado == 1).order_by(programacion.c.id.desc()).limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
     return result
 
