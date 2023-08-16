@@ -90,13 +90,13 @@ class Proforma:
 
 @strawberry.field
 def proforma_por_id(NoFactura: str) -> Optional[Proforma]:
-    result = conn.execute(proforma.select().where(proforma.c.NoFactura == NoFactura)).fetchone()
+    result = conn.execute(proforma.select().where(proforma.c.NoFactura == NoFactura, proforma.c.idEstado == 1)).fetchone()
     conn.commit()
     return result
 
 @strawberry.field
 def lista_proforma(self) -> typing.List[Proforma]:
-    result = conn.execute(proforma.select()).fetchall()
+    result = conn.execute(proforma.select().where(proforma.c.idEstado == 1)).fetchall()
     conn.commit()
     return result
 
