@@ -49,7 +49,6 @@ class Programacion:
     def cuadrilla(self, info: Info) -> typing.List[Optional[UsuarioCuadrilla]]:
         cuadrillas = conn.execute(usuario_cuadrilla.select().where(usuario_cuadrilla.c.idCuadrilla == self.idCuadrilla)).fetchall()
         return [UsuarioCuadrilla(**dict(cuadrilla._mapping)) for cuadrilla in cuadrillas] or []
-    
     idHorarioProgramacion: Optional[int] = None
     @strawberry.field
     def horarioprogramacion(self, info: Info) -> Optional[HorarioProgramacion]:
@@ -79,9 +78,10 @@ def programacion_por_id(id: int) -> Optional[Programacion]:
     return result
 
 @strawberry.field
-def lista_programacion(self) -> typing.List[Programacion]:
-    result = conn.execute(programacion.select()).fetchall()
-    conn.commit()
+def lista_programacion(self, page: int = 1, per_page: int = 10) -> typing.List[Programacion]:
+    offset = (page - 1) * per_page
+    query = programacion.select().order_by(programacion.c.id.desc()).limit(per_page).offset(offset)
+    result = conn.execute(query).fetchall()
     return result
 
 lstProgramacionQuery = [programacion_por_id, lista_programacion]
