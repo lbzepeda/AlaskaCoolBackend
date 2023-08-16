@@ -305,6 +305,35 @@ async def crear_programacion(
     conn.commit()
     return int(result.inserted_primary_key[0])
 
+def get_usuario(idUsuarioActualizador):
+    usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioActualizador)).fetchone()
+    return Usuario.from_row(usuario_row)
+
+def get_servicio(codservicio):
+    servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
+    return Productos.from_row(servicio_row)
+
+def get_referencia(codfactura, codproforma):
+    return codfactura if codfactura else codproforma
+
+def get_proforma_or_factura(referencia):
+    proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == referencia)).fetchone()
+    if not proformaobj:
+        return None, conn.execute(facturas.select().where(facturas.c.NoFactura == referencia)).fetchone()
+    return proformaobj, None
+
+def update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
+    codeCalenderEvent = create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
+    conn.execute(programacion.update().where(programacion.c.id == id), {
+        "codeGoogleCalendar": codeCalenderEvent
+    })
+
+def notify_update(id, usuario, referencia, codfactura, idUsuarioActualizador):
+    ref_value = get_referencia(codfactura, referencia)
+    text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
+    if idUsuarioActualizador != 1:
+        send_message(text)
+
 @strawberry.mutation
 def actualizar_programacion(self, id: int, 
     codservicio: str, 
@@ -335,35 +364,21 @@ def actualizar_programacion(self, id: int,
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
     })
-    print(result. returns_rows)
 
-    usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioActualizador)).fetchone()
-
-    usuario = Usuario.from_row(usuario_row)
-    horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
-    servicio_row = conn.execute(productos.select().where(productos.c.CodProducto == codservicio)).fetchone()
+    usuario = get_usuario(idUsuarioActualizador)
+    servicio = get_servicio(codservicio)
+    referencia = get_referencia(codfactura, codproforma)
+    proformaobj, facturaobj = get_proforma_or_factura(referencia)
     
-    facturaobj = None
-    proformaobj = None
-
-    referencia = codfactura if codfactura else codproforma
-    proformaobj = conn.execute(proforma.select().where(proforma.c.NoFactura == referencia)).fetchone()
-
-    if not proformaobj:
-        facturaobj = conn.execute(facturas.select().where(facturas.c.NoFactura == referencia)).fetchone()
-
-    servicio = Productos.from_row(servicio_row)
-
+    horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
+    
     if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
-        create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
-    ref_value = codfactura if codfactura else codproforma
-
-    text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
-
-    if idUsuarioActualizador != 1:
-        send_message(text)
-
+        update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
+    
+    notify_update(id, usuario, referencia, codfactura, idUsuarioActualizador)
+    
     conn.commit()
     return str(result.rowcount) + " Row(s) updated"
+    
 
 lstProgramacionMutation = [crear_programacion, actualizar_programacion]

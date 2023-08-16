@@ -67,6 +67,8 @@ class Programacion:
     def estado_programacion(self, info: Info) -> Optional[EstadoProgramacion]:  
         estadoprogramacion = [EstadoProgramacion(**dict(estadoprogramacion._mapping)) for estadoprogramacion in lstEstadoProgramacion if estadoprogramacion and estadoprogramacion.id == self.idEstadoProgramacion]
         return estadoprogramacion[0] if estadoprogramacion else None
+    idEstado: int
+    codeGoogleCalendar: Optional[str]
     @classmethod
     def from_row(cls, row):
         return cls(**row)

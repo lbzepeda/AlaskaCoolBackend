@@ -16,5 +16,7 @@ programacion = Table('programacion', meta,
     Column('direccion', Text, nullable=True),
     Column('observaciones', Text, nullable=True),
     Column('idDepartamento', Integer, ForeignKey('departamentos.id')),
-    Column('idEstadoProgramacion', Integer, ForeignKey('estado_programacion.id'))
+    Column('idEstadoProgramacion', Integer, ForeignKey('estado_programacion.id')),
+    Column('idEstado', Integer, ForeignKey('estados.id')),
+    Column('codeGoogleCalendar', Text, nullable=True),
 )

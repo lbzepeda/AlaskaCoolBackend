@@ -13,3 +13,5 @@ class Programacion(BaseModel):
     UrlGeoLocalizacion: str
     direccion: Optional[int]
     observaciones: Optional[str] = None
+    idEstado: Optional[int] = None
+    codeGoogleCalendar: Optional[str] = None
