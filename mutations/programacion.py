@@ -399,8 +399,8 @@ def eliminar_programacion(self, id: int,
     usuario = get_usuario(idUsuarioActualizador)
     ref_value = get_referencia(event_row.codfactura, event_row.codproforma)
 
-    #if event_row and event_row.CodeGoogleCalendar:
-        #delete_google_calendar_event(event_row.CodeGoogleCalendar)
+    if event_row and event_row.CodeGoogleCalendar:
+        delete_google_calendar_event(event_row.CodeGoogleCalendar)
 
     resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
         "idEstado": 2
