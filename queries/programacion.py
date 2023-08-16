@@ -78,9 +78,9 @@ def programacion_por_id(id: int) -> Optional[Programacion]:
     return result
 
 @strawberry.field
-def lista_programacion(self, page: int = 1, per_page: int = 10) -> typing.List[Programacion]:
-    offset = (page - 1) * per_page
-    query = programacion.select().order_by(programacion.c.id.desc()).limit(per_page).offset(offset)
+def lista_programacion(self, page: int = 1, perPage: int = 10) -> typing.List[Programacion]:
+    offset = (page - 1) * perPage
+    query = programacion.select().order_by(programacion.c.id.desc()).limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
     return result
 
