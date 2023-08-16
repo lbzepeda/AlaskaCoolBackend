@@ -1,7 +1,7 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion, departamentos, estado_programacion
+from models.index import programacion, productos, proforma, usuarios, usuario_cuadrilla, facturas, horario_programacion, departamentos, estado_programacion
 from strawberry.types import Info
 from typing import Optional
 from .proforma import Proforma
@@ -13,15 +13,19 @@ from .departamentos import Departamentos
 from .estadoprogramacion import EstadoProgramacion
 from .usuario import Usuario
 
+lstProductos = conn.execute(productos.select()).fetchall()
+lstUsuarios = conn.execute(usuarios.select()).fetchall()
+lstDepartamentos = conn.execute(departamentos.select()).fetchall()
+lstEstadoProgramacion = conn.execute(estado_programacion.select()).fetchall()
+
 @strawberry.type
 class Programacion:
     id: int
     codservicio: str
     @strawberry.field
-    def servicio(self, info: Info) -> typing.List[Optional[Productos]]:
-        matching_products_query = productos.select().where(productos.c.CodProducto == self.codservicio)
-        result = conn.execute(matching_products_query).fetchall()
-        return [Productos(**dict(producto._mapping)) for producto in result]
+    def servicio(self, info: Info) -> typing.List[Optional[Productos]]:  
+        productos = [Productos(**dict(producto._mapping)) for producto in lstProductos if producto.CodProducto == self.codservicio]
+        return productos if productos else []
     codcliente: Optional[str] = None
     codfactura: Optional[str] = None
     @strawberry.field
@@ -37,9 +41,9 @@ class Programacion:
         return Proforma(**dict(result._mapping)) if result else None
     idUsuarioCreacion: int
     @strawberry.field
-    def usuario_creacion(self, info: Info) -> Optional[Usuario]:
-        usuario = conn.execute(usuarios.select().where(usuarios.c.id == self.idUsuarioCreacion)).first()
-        return Usuario(**dict(usuario._mapping)) if usuario else None
+    def usuario_creacion(self, info: Info) -> Optional[Usuario]:  
+        usuariocreador = [Usuario(**dict(usuariocreador._mapping)) for usuariocreador in lstUsuarios if usuariocreador and usuariocreador.id == self.idUsuarioCreacion]
+        return usuariocreador[0] if usuariocreador else None
     idCuadrilla: Optional[int] = None
     @strawberry.field
     def cuadrilla(self, info: Info) -> typing.List[Optional[UsuarioCuadrilla]]:
@@ -56,14 +60,14 @@ class Programacion:
     observaciones: Optional[str]
     idDepartamento: int
     @strawberry.field
-    def departamento(self, info: Info) -> Optional[Departamentos]:
-        departamento = conn.execute(departamentos.select().where(departamentos.c.id == self.idDepartamento)).first()
-        return Departamentos(**dict(departamento._mapping)) if departamento else None
+    def departamento(self, info: Info) -> Optional[Departamentos]:  
+        departamento = [Departamentos(**dict(departamento._mapping)) for departamento in lstDepartamentos if departamento and departamento.id == self.idDepartamento]
+        return departamento[0] if departamento else None
     idEstadoProgramacion: int
     @strawberry.field
-    def estado_programacion(self, info: Info) -> Optional[EstadoProgramacion]:
-        estado = conn.execute(estado_programacion.select().where(estado_programacion.c.id == self.idEstadoProgramacion)).first()
-        return EstadoProgramacion(**dict(estado._mapping)) if estado else None
+    def estado_programacion(self, info: Info) -> Optional[EstadoProgramacion]:  
+        estadoprogramacion = [EstadoProgramacion(**dict(estadoprogramacion._mapping)) for estadoprogramacion in lstEstadoProgramacion if estadoprogramacion and estadoprogramacion.id == self.idEstadoProgramacion]
+        return estadoprogramacion[0] if estadoprogramacion else None
     @classmethod
     def from_row(cls, row):
         return cls(**row)
