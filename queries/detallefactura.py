@@ -8,9 +8,6 @@ from decimal import Decimal
 from strawberry.types import Info
 from .productos import Productos
 
-
-lstProductos = conn.execute(productos.select()).fetchall()
-
 @strawberry.type
 class DetalleFactura:
     Sucursal: str
@@ -21,9 +18,15 @@ class DetalleFactura:
     FechaFactura: datetime
     Producto: str
     @strawberry.field
-    def producto(self, info: Info) -> typing.List[Optional[Productos]]:  
-        productos = [Productos(**dict(producto._mapping)) for producto in lstProductos if producto.CodProducto == self.Producto]
-        return productos if productos else []
+    def producto(self, info: Info) -> typing.List[Optional[Productos]]:
+        current_productos = conn.execute(productos.select()).fetchall()
+
+        matching_products = [
+            Productos(**dict(prod._mapping))
+            for prod in current_productos
+            if prod.CodProducto == self.Producto
+        ]
+        return matching_products or []
     UMedida: str
     Cantidad: Optional[Decimal]
     Bonificacion: Decimal

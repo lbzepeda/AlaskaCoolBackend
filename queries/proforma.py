@@ -7,15 +7,19 @@ from typing import Optional
 from datetime import datetime
 from .detalleproforma import *
 
-lstDetProformas = conn.execute(det_proforma.select()).fetchall()
-
 @strawberry.type
 class Proforma:
     NoFactura: str
     @strawberry.field
-    def det_proforma(self, info: Info) -> typing.List[Optional[DetalleProforma]]:  
-        detFacturas = [DetalleProforma(**dict(detFactura._mapping)) for detFactura in lstDetProformas if detFactura.NoFactura == self.NoFactura]
-        return detFacturas if detFacturas else []
+    def det_proforma(self, info: Info) -> typing.List[Optional[DetalleProforma]]:
+        current_det_proformas = conn.execute(det_proforma.select()).fetchall()
+
+        matched_proformas = [
+            DetalleProforma(**dict(det._mapping))
+            for det in current_det_proformas 
+            if det.NoFactura == self.NoFactura
+        ]
+        return matched_proformas or []
     Serie: str
     Tipo: str
     Modo: str
