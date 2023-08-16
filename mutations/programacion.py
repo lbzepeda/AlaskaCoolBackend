@@ -384,9 +384,10 @@ def get_proforma_or_factura(referencia):
 
 def update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
     codeCalenderEvent = create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
-    conn.execute(programacion.update().where(programacion.c.id == id), {
+    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codeGoogleCalendar": codeCalenderEvent
     })
+    return resultUpd
 
 def notify_update(idUsuarioActualizador, text):
     if idUsuarioActualizador != 1:
@@ -402,8 +403,10 @@ def eliminar_programacion(self, id: int,
     if event_row and event_row.CodeGoogleCalendar:
         delete_google_calendar_event(event_row.CodeGoogleCalendar)
 
-    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id).values(idEstado=2))
-    
+    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
+        "idEstado": 2
+    })
+
     text = f"El usuario *{usuario.nombre}* ELIMINO programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
     notify_update(idUsuarioActualizador, text)
     
