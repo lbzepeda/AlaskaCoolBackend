@@ -23,12 +23,22 @@ class TipoUsuario(Enum):
     Vendedor = 4
     SupervisorTecnico = 5
 
+lstProductos = conn.execute(productos.select()).fetchall()
+lstProforma = conn.execute(proforma.select()).fetchall()
+lstDetProformas = conn.execute(det_proforma.select()).fetchall()
+lstUsuarios = conn.execute(usuarios.select()).fetchall()
+lstCuadrillas = conn.execute(cuadrillas.select()).fetchall()
+lstUsuario_Cuadrilla = conn.execute(usuario_cuadrilla.select()).fetchall()
+lstFacturas = conn.execute(facturas.select()).fetchall()
+lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
+lstHorarioProgramacion = conn.execute(horario_programacion.select()).fetchall()
+
 load_dotenv()
 slack_token = os.getenv('SLACK_TOKEN')
 ssl._create_default_https_context = ssl._create_unverified_context
 client = WebClient(token=slack_token)
 
-def manage_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia, progrmacionOb):
+def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
     # Carga las credenciales de la cuenta de servicio
     creds = Credentials.from_service_account_file('alaskacool-ee34eec8f111.json', 
                                                   scopes=['https://www.googleapis.com/auth/calendar'])
@@ -45,10 +55,10 @@ def manage_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
     UrlGeoLocalizacion = UrlGeoLocalizacion if UrlGeoLocalizacion else "N/A"
     observaciones = observaciones if observaciones else "N/A"
 
-    # Evento a crear o actualizar
-    event_body = {
-        'summary': cliente + ' - ' + servicio.descripcion + ' - Referencia: ' + referencia,
-        'description':  f'Direccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}',
+    # Evento a crear
+    event = {
+        'summary': cliente + ' - ' + servicio.descripcion + ' - Referencia: ' + referencia,  # Puedes personalizar este texto
+        'description':  f'Direccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}',  # Puedes personalizar este texto
         'start': {
             'dateTime': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
             'timeZone': 'America/Managua',
@@ -61,22 +71,10 @@ def manage_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
 
     calendar_id = 'bdb1c1dd54cb4991313cbcfda21f549b35e0d40f0103f06812e8dc86f5b20a91@group.calendar.google.com'
 
-    # Si progrmacionOb.CodeGoogleCalendar no es None, actualizamos el evento existente
-    if progrmacionOb.CodeGoogleCalendar:
-        try:
-            updated_event = service.events().update(calendarId=calendar_id, eventId=progrmacionOb.CodeGoogleCalendar, body=event_body).execute()
-            print(f"Evento actualizado: {updated_event['id']}")
-            return updated_event['id']
-        except Exception as e:
-            # Aquí puedes manejar posibles errores, como un evento que no se encuentra en el calendario
-            print(f"Error al actualizar el evento: {e}")
-            # Si prefieres crear un nuevo evento en caso de error, simplemente continua la ejecución
-    else:
-        # Si progrmacionOb.CodeGoogleCalendar es None, creamos un nuevo evento
-        created_event = service.events().insert(calendarId=calendar_id, body=event_body).execute()
-        print(f"Evento creado: {created_event['id']}")
-        return created_event['id']
-
+    # Usa el método insert del servicio de calendar para crear el evento
+    created_event = service.events().insert(calendarId=calendar_id, body=event).execute()
+    print(f"Evento calendario: {created_event['id']}")
+    return created_event['id']  # Retorna el ID del evento creado
 
 def delete_google_calendar_event(event_id):
     # Carga las credenciales de la cuenta de servicio
@@ -262,26 +260,6 @@ class Usuario:
         return cls(**row._asdict())
 
 @strawberry.type
-class Programacion:
-    id: int
-    codservicio: str
-    codcliente: str
-    codfactura: str
-    codproforma: str
-    idUsuarioCreacion: int
-    idCuadrilla: int
-    idHorarioProgramacion: int
-    UrlGeoLocalizacion: str
-    direccion: int
-    observaciones: str
-    idEstado: int
-    codeGoogleCalendar: str
-
-    @classmethod
-    def from_row(cls, row):
-        return cls(**row._asdict())
-
-@strawberry.type
 class HorarioProgramacion:
     id: int
     fechainicio: datetime
@@ -340,10 +318,6 @@ async def crear_programacion(
     conn.commit()
     return int(result.inserted_primary_key[0])
 
-def get_programacion(idProgramacion):
-    programacion_row = conn.execute(programacion.select().where(usuarios.c.id == idProgramacion)).fetchone()
-    return Programacion.from_row(programacion_row)
-
 def get_usuario(idUsuarioActualizador):
     usuario_row = conn.execute(usuarios.select().where(usuarios.c.id == idUsuarioActualizador)).fetchone()
     return Usuario.from_row(usuario_row)
@@ -361,8 +335,8 @@ def get_proforma_or_factura(referencia):
         return None, conn.execute(facturas.select().where(facturas.c.NoFactura == referencia)).fetchone()
     return proformaobj, None
 
-def update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia, progrmacionOb):
-    codeCalenderEvent = manage_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia, progrmacionOb)
+def update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
+    codeCalenderEvent = create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
     conn.execute(programacion.update().where(programacion.c.id == id), {
         "CodeGoogleCalendar": codeCalenderEvent
     })
@@ -421,20 +395,18 @@ def actualizar_programacion(self, id: int,
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
+        
     })
 
     usuario = get_usuario(idUsuarioActualizador)
     servicio = get_servicio(codservicio)
     referencia = get_referencia(codfactura, codproforma)
     proformaobj, facturaobj = get_proforma_or_factura(referencia)
-    progrmacionOb = get_programacion(id)
-    #CodeGoogleCalendar
-
-
+    
     horario_row = conn.execute(horario_programacion.select().where(horario_programacion.c.id == idHorarioProgramacion)).fetchone()
     
     if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
-        update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia, progrmacionOb)
+        update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
     
     ref_value = get_referencia(codfactura, referencia)
     text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
