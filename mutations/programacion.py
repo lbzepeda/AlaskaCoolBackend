@@ -271,6 +271,7 @@ class HorarioProgramacion:
     def from_row(cls, row):
         return cls(**row._asdict())
 
+
 @strawberry.mutation
 async def crear_programacion(
     self, 
