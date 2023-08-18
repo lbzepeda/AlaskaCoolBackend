@@ -7,4 +7,5 @@ archivo_programacion = Table('archivo_programacion', meta,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('PathArchivo', String(50)),
     Column('idTipoArchivo', Integer, ForeignKey('tipo_archivo.id')),
+    Column('idProgramacion', Integer, ForeignKey('programacion.id'))
 )
