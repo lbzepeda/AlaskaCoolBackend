@@ -14,5 +14,7 @@ from models.horarioprogramacion import horario_programacion
 from models.programacion import programacion
 from models.departamentos import departamentos
 from models.estadoprogramacion import estado_programacion
+from models.tipoarchivo import tipo_archivo
+from models.archivoprogramacion import archivo_programacion
 
 meta.create_all(engine)
