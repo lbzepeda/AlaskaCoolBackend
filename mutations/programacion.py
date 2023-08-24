@@ -346,8 +346,8 @@ async def crear_programacion(
     text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id_value}"
 
     print(f"texto {text}")
-    if idUsuarioCreacion != 1:
-        send_message(text)
+    #if idUsuarioCreacion != 1:
+    send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
 
@@ -385,9 +385,8 @@ def update_google_calendar_event(id, horario_row, servicio, facturaobj, proforma
 
 
 def notify_update(idUsuarioActualizador, text):
-    if idUsuarioActualizador != 1:
-        send_message(text)
-
+    #if idUsuarioActualizador != 1:
+    send_message(text)
 
 @strawberry.mutation
 def eliminar_programacion(self, id: int,
