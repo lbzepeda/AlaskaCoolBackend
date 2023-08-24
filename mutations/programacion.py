@@ -104,28 +104,19 @@ def delete_google_calendar_event(event_id):
 
 
 def send_message(text: str):
-    def main():
-        url = webhook_programing
-        app_message = {
-            'text': str
-        }
-        message_headers = {'Content-Type': 'application/json; charset=UTF-8'}
-        http_obj = Http()
-        response = http_obj.request(
-            uri=url,
-            method='POST',
-            headers=message_headers,
-            body=dumps(app_message),
-        )
-        print(response)
-    # try:
-    #     response = client.chat_postMessage(
-    #         channel="C05L4FPK7CG",  # Aquí puedes cambiar el ID de tu canal
-    #         text=text)  # Aquí utilizamos la variable text
-    # except SlackApiError as e:
-    #     print(f"Got an error: {e.response['error']}")
-    #     print(slack_token)
-
+    url = webhook_programing
+    app_message = {
+        'text': text
+    }
+    message_headers = {'Content-Type': 'application/json; charset=UTF-8'}
+    http_obj = Http()
+    response = http_obj.request(
+        uri=url,
+        method='POST',
+        headers=message_headers,
+        body=dumps(app_message),
+    )
+    print(response)
 
 @strawberry.type
 class Productos:
@@ -346,7 +337,7 @@ async def crear_programacion(
     text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id_value}"
 
     print(f"texto {text}")
-    #if idUsuarioCreacion != 1:
+    # if idUsuarioCreacion != 1:
     send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
@@ -385,8 +376,9 @@ def update_google_calendar_event(id, horario_row, servicio, facturaobj, proforma
 
 
 def notify_update(idUsuarioActualizador, text):
-    #if idUsuarioActualizador != 1:
+    # if idUsuarioActualizador != 1:
     send_message(text)
+
 
 @strawberry.mutation
 def eliminar_programacion(self, id: int,
