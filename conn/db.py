@@ -20,7 +20,4 @@ engine_sql = create_engine(connection_string, echo=True,
     pool_recycle=3600)
 meta_sql = MetaData()
 
-try:
-    conn_sql = engine_sql.connect()
-except Exception as e:
-    print(f"Error al conectar a SQL Server: {e}")
+conn_sql = engine_sql.connect()
