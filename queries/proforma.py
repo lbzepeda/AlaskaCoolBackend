@@ -1,7 +1,7 @@
 import typing
 import strawberry
-from conn.db import conn, conn_sql
-from models.index import proforma, det_proforma, productos
+from conn.db import conn_sql
+from models.index import proforma, det_proforma
 from strawberry.types import Info
 from typing import Optional
 from datetime import datetime
