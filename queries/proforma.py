@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn, conn_sql
 from models.index import proforma, det_proforma, productos
 from strawberry.types import Info
 from typing import Optional
@@ -90,14 +90,12 @@ class Proforma:
 
 @strawberry.field
 def proforma_por_id(NoFactura: str) -> Optional[Proforma]:
-    result = conn.execute(proforma.select().where(proforma.c.NoFactura == NoFactura)).fetchone()
-    conn.commit()
+    result = conn_sql.execute(proforma.select().where(proforma.c.NoFactura == NoFactura)).fetchone()
     return result
 
 @strawberry.field
 def lista_proforma(self) -> typing.List[Proforma]:
-    result = conn.execute(proforma.select()).fetchall()
-    conn.commit()
+    result = conn_sql.execute(proforma.select()).fetchall()
     return result
 
 lstProformaQuery = [proforma_por_id, lista_proforma]

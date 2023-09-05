@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn_sql
 from models.index import det_facturas, productos, facturas
 from strawberry.types import Info
 from typing import Optional
@@ -120,14 +120,12 @@ class Factura:
 
 @strawberry.field
 def factura_por_id(NoFactura: str) -> Optional[Factura]:
-    result = conn.execute(facturas.select().where(facturas.c.NoFactura == NoFactura)).fetchone()
-    conn.commit()
+    result = conn_sql.execute(facturas.select().where(facturas.c.NoFactura == NoFactura)).fetchone()
     return result
 
 @strawberry.field
 def lista_factura(self) -> typing.List[Factura]:
-    result = conn.execute(facturas.select()).fetchall()
-    conn.commit()
+    result = conn_sql.execute(facturas.select()).fetchall()
     return result
 
 lstFacturaQuery = [factura_por_id, lista_factura]
