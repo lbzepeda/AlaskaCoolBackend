@@ -21,13 +21,13 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Copia el archivo requirements.txt (si tienes uno) y tu código al contenedor
+# Copia el archivo requirements.txt, setup.sh y tu código al contenedor
 COPY requirements.txt .
+COPY setup.sh .
 COPY . .
 
-# Instala las dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install pymssql
+# Ejecuta el script para configurar el entorno
+RUN ./setup.sh
 
 # Expone el puerto 8000
 EXPOSE 8000
