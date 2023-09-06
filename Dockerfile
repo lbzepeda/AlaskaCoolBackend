@@ -1,11 +1,15 @@
-FROM python:3.11-slim
+# Usar Debian 10 (buster) como base
+FROM python:3.11-slim-buster
 
 # Establece un directorio de trabajo
 WORKDIR /app
 
-# Actualizar el sistema e instalar dependencias necesarias
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    unixodbc \
+# Actualizar el sistema
+RUN apt-get update
+RUN apt-get upgrade -y
+
+# Instalar dependencias básicas
+RUN apt-get install -y unixodbc \
     unixodbc-dev \
     freetds-dev \
     gcc \
@@ -20,26 +24,33 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     krb5-config \
     curl \
     apt-transport-https \
-    gnupg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    gnupg
 
-# Instala el ODBC Driver 17 para SQL Server
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && \
-    ACCEPT_EULA=Y apt-get install -y msodbcsql17
+# Agregar las claves y repositorios de Microsoft para ODBC
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
 
-# Copia el archivo requirements.txt, setup.sh y tu código al contenedor
+# Instalar apt-transport-https y limpiar cache
+RUN apt-get install -y apt-transport-https
+RUN apt-get clean
+RUN apt-get update
+
+# Instalar msodbcsql17
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
+# Limpieza final
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copiar archivos necesarios y código al contenedor
 COPY requirements.txt .
 COPY setup.sh .
 COPY . .
 
-# Ejecuta el script para configurar el entorno
+# Ejecutar script para configurar el entorno
 RUN ./setup.sh
 
-# Expone el puerto 8000
+# Exponer el puerto 8000
 EXPOSE 8000
 
-# Ejecuta tu aplicación
+# Ejecutar tu aplicación
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

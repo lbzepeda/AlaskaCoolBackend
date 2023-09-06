@@ -32,17 +32,17 @@ conn = engine.connect()
 #     "driver=ODBC+Driver+17+for+SQL+Server&sslmode=no_verify"
 # )
 
-connection_string = (
-    'mssql+pyodbc://LZepeda:Zepeda2023@20.120.95.95\ALASKACOOL/2201ALASKACOOL_CENTRAL?driver=ODBC+Driver+17+for+SQL+Server'
-)
+# connection_string = (
+#     'mssql+pyodbc://LZepeda:Zepeda2023@20.120.95.95\ALASKACOOL/2201ALASKACOOL_CENTRAL?driver=ODBC+Driver+17+for+SQL+Server'
+# )
 
-engine_sql = create_engine(connection_string, echo=True,
-    echo_pool=True,
-    pool_use_lifo=True,
-    pool_pre_ping=True,
-    pool_recycle=3600)
+# engine_sql = create_engine(connection_string, echo=True,
+#     echo_pool=True,
+#     pool_use_lifo=True,
+#     pool_pre_ping=True,
+#     pool_recycle=3600)
 
-meta_sql = MetaData()
+# meta_sql = MetaData()
 
-# Crear una conexión
-conn_sql = engine_sql.connect()
+# # Crear una conexión
+# conn_sql = engine_sql.connect()
