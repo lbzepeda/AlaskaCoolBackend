@@ -405,7 +405,7 @@ def eliminar_programacion(self, id: int,
 @strawberry.mutation
 def actualizar_programacion(self, id: int,
                             codservicio: str,
-                            idUsuarioCreacion: Optional[int],
+                            # idUsuarioCreacion: Optional[int],
                             UrlGeoLocalizacion: str,
                             info: Info,
                             codcliente: Optional[str] = None,
@@ -421,7 +421,7 @@ def actualizar_programacion(self, id: int,
 
     result = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codservicio": codservicio,
-        "idUsuarioCreacion": idUsuarioCreacion,
+        # "idUsuarioCreacion": idUsuarioCreacion,
         "UrlGeoLocalizacion": UrlGeoLocalizacion,
         "codcliente": codcliente,
         "codfactura": codfactura,
