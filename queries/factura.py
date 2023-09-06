@@ -12,7 +12,7 @@ class Factura:
     NoFactura: str
     @strawberry.field
     def det_factura(self, info: Info) -> typing.List[Optional[DetalleFactura]]:
-        current_det_facturas = conn.execute(det_facturas.select()).fetchall()
+        current_det_facturas = conn_sql.execute(det_facturas.select()).fetchall()
 
         matched_facturas = [
             DetalleFactura(**dict(det._mapping))

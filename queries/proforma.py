@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn_sql
 from models.index import proforma, det_proforma
 from strawberry.types import Info
 from typing import Optional
@@ -12,7 +12,7 @@ class Proforma:
     NoFactura: str
     @strawberry.field
     def det_proforma(self, info: Info) -> typing.List[Optional[DetalleProforma]]:
-        current_det_proformas = conn.execute(det_proforma.select()).fetchall()
+        current_det_proformas = conn_sql.execute(det_proforma.select()).fetchall()
 
         matched_proformas = [
             DetalleProforma(**dict(det._mapping))
@@ -90,12 +90,12 @@ class Proforma:
 
 @strawberry.field
 def proforma_por_id(NoFactura: str) -> Optional[Proforma]:
-    result = conn.execute(proforma.select().where(proforma.c.NoFactura == NoFactura)).fetchone()
+    result = conn_sql.execute(proforma.select().where(proforma.c.NoFactura == NoFactura)).fetchone()
     return result
 
 @strawberry.field
 def lista_proforma(self) -> typing.List[Proforma]:
-    result = conn.execute(proforma.select()).fetchall()
+    result = conn_sql.execute(proforma.select()).fetchall()
     return result
 
 lstProformaQuery = [proforma_por_id, lista_proforma]
