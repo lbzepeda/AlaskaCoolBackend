@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData
-import urllib.parse
+import pyodbc
 import logging
 
 # Configuración de logging
@@ -15,33 +15,30 @@ engine = create_engine('mysql+pymysql://root:Carl1991*+1@34.173.53.131:3306/alas
 meta = MetaData()
 conn = engine.connect()
 
-# # Conexión a SQL Server
-# engine_sql = create_engine(
-#     'mssql+pymssql://LZepeda:Zepeda2023@20.120.95.95/2201ALASKACOOL_CENTRAL?charset=utf8',
-#     echo=True,
-#     echo_pool=True,
-#     pool_use_lifo=True,
-#     pool_pre_ping=True,
-#     pool_recycle=3600
-# )
-# meta_sql = MetaData()
-# conn_sql = engine_sql.connect()
-
-# Conexión a SQL Server
-# connection_string = (
-#     "mssql+pyodbc://LZepeda:Zepeda2023@20.120.95.95\\ALASKACOOL/2201ALASKACOOL_CENTRAL"
-#     "?driver=ODBC+Driver+17+for+SQL+Server&odbc_connect=" + urllib.parse.quote_plus("DRIVER={/opt/homebrew/Cellar/unixodbc/2.3.12/lib/libodbc.2.dylib};SERVER=20.120.95.95\\ALASKACOOL;DATABASE=2201ALASKACOOL_CENTRAL;UID=LZepeda;PWD=Zepeda2023")
+# Conexión a SQL Server con pymssql
+# Nota: Asegúrate de cambiar YOUR_USERNAME y YOUR_PASSWORD por tus credenciales de SQL Server Authentication.
+# conn_sql = pyodbc.connect(
+#     "Driver={ODBC Driver 17 for SQL Server}",
+#     server="20.120.95.95\ALASKACOOL",
+#     user="LZepeda",
+#     password="Zepeda2023",
+#     database="2201ALASKACOOL_CENTRAL",
+#     schema="ALASKACOOL_Lectura",
+#     sslmode="no_verify"
 # )
 
-# engine_sql = create_engine(connection_string, echo=True,
-# echo_pool=True,
-# pool_use_lifo=True,
-# pool_pre_ping=True,
-# pool_recycle=3600)
-# meta_sql = MetaData()
+connection_string = (
+    "mssql+pyodbc://LZepeda:Zepeda2023@20.120.95.95\ALASKACOOL/2201ALASKACOOL_CENTRAL?"
+    "driver=ODBC+Driver+17+for+SQL+Server&sslmode=no_verify"
+)
 
-# try:
-#     conn_sql = engine_sql.connect()
-#     logger.info("Conexión exitosa a SQL Server.")
-# except Exception as e:
-#     logger.error(f"Error al conectarse a SQL Server: {e}")
+engine_sql = create_engine(connection_string, echo=True,
+    echo_pool=True,
+    pool_use_lifo=True,
+    pool_pre_ping=True,
+    pool_recycle=3600)
+
+meta_sql = MetaData()
+
+# Crear una conexión
+conn_sql = engine_sql.connect()
