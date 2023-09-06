@@ -405,7 +405,7 @@ def eliminar_programacion(self, id: int,
 @strawberry.mutation
 def actualizar_programacion(self, id: int,
                             codservicio: str,
-                            idUsuarioCreacion: int,
+                            idUsuarioCreacion: Optional[int],
                             UrlGeoLocalizacion: str,
                             info: Info,
                             codcliente: Optional[str] = None,
