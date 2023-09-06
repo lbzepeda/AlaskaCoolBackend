@@ -26,6 +26,4 @@ engine_sql = create_engine(connection_string, echo=True,
     pool_recycle=3600)
 
 meta_sql = MetaData()
-
-# Crear una conexión
 conn_sql = engine_sql.connect()
