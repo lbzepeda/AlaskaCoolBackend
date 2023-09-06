@@ -1,29 +1,48 @@
+import os
 from sqlalchemy import create_engine, MetaData
-import pyodbc
-import logging
+from dotenv import load_dotenv
 
-# Configuración de logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Cargar variables de entorno
+load_dotenv()
 
-# Conexión a MySQL
-engine = create_engine('mysql+pymysql://root:Carl1991*+1@34.173.53.131:3306/alaskacool', echo=True,
-    echo_pool=True,
-    pool_use_lifo=True,
-    pool_pre_ping=True,
-    pool_recycle=3600)
-meta = MetaData()
-conn = engine.connect()
+# ------- Configuración de SQL -------
+DB_USERNAME_SQL = os.getenv('DB_USERNAME_SQL')
+DB_PASSWORD_SQL = os.getenv('DB_PASSWORD_SQL')
+DB_HOST_SQL = os.getenv('DB_HOST_SQL')
+DB_NAME_SQL = os.getenv('DB_NAME_SQL')
+DB_DRIVER_SQL = os.getenv('DB_DRIVER_SQL')
 
 connection_string = (
-    'mssql+pyodbc://LZepeda:Zepeda2023@20.120.95.95\ALASKACOOL/2201ALASKACOOL_CENTRAL?driver=ODBC+Driver+17+for+SQL+Server'
+    f"mssql+pyodbc://{DB_USERNAME_SQL}:{DB_PASSWORD_SQL}@"
+    f"{DB_HOST_SQL}/{DB_NAME_SQL}?driver={DB_DRIVER_SQL}"
 )
 
-engine_sql = create_engine(connection_string, echo=True,
-    echo_pool=True,
-    pool_use_lifo=True,
-    pool_pre_ping=True,
-    pool_recycle=3600)
+engine_sql = create_engine(
+    connection_string, 
+    echo=True, echo_pool=True, pool_use_lifo=True,
+    pool_pre_ping=True, pool_recycle=3600
+)
 
 meta_sql = MetaData()
 conn_sql = engine_sql.connect()
+
+# ------- Configuración de MySQL -------
+DB_USERNAME_MYSQL = os.getenv('DB_USERNAME_MYSQL')
+DB_PASSWORD_MYSQL = os.getenv('DB_PASSWORD_MYSQL')
+DB_HOST_MYSQL = os.getenv('DB_HOST_MYSQL')
+DB_NAME_MYSQL = os.getenv('DB_NAME_MYSQL')
+DB_PORT_MYSQL = os.getenv('DB_PORT_MYSQL')
+
+connection_string_mysql = (
+    f"mysql+pymysql://{DB_USERNAME_MYSQL}:{DB_PASSWORD_MYSQL}@"
+    f"{DB_HOST_MYSQL}:{DB_PORT_MYSQL}/{DB_NAME_MYSQL}"
+)
+
+engine = create_engine(
+    connection_string_mysql, 
+    echo=True, echo_pool=True, pool_use_lifo=True,
+    pool_pre_ping=True, pool_recycle=3600
+)
+
+meta = MetaData()
+conn = engine.connect()
