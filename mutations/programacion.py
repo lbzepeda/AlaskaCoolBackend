@@ -67,9 +67,9 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
     # Evento a crear
     event = {
         # Puedes personalizar este texto
-        'summary': cliente + ' - ' + servicio.descripcion + ' - Referencia: ' + referencia,
+        'summary': f"{cliente} - {servicio.descripcion} - Referencia: {referencia}",
         # Puedes personalizar este texto
-        'description':  f'Direccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}\nURL de Programación: https://alaska-cool-programacion.vercel.app/registerprograming/{id}',
+        'description': f"URL de Programación: https://alaska-cool-programacion.vercel.app/registerprograming/{id}\nDireccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}",
         'start': {
             'dateTime': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
             'timeZone': 'America/Managua',
@@ -79,6 +79,7 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
             'timeZone': 'America/Managua',
         },
     }
+
 
     calendar_id = 'bdb1c1dd54cb4991313cbcfda21f549b35e0d40f0103f06812e8dc86f5b20a91@group.calendar.google.com'
 
