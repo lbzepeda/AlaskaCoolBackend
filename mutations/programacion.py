@@ -44,7 +44,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 webhook_programing = os.getenv('WEBHOOK_PROGRAMACION_URL')
 
 
-def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
+def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia, id):
     # Carga las credenciales de la cuenta de servicio
     creds = Credentials.from_service_account_file('alaskacool-ee34eec8f111.json',
                                                   scopes=['https://www.googleapis.com/auth/calendar'])
@@ -69,7 +69,7 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
         # Puedes personalizar este texto
         'summary': cliente + ' - ' + servicio.descripcion + ' - Referencia: ' + referencia,
         # Puedes personalizar este texto
-        'description':  f'Direccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}',
+        'description':  f'Direccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}\nURL de Programación: https://alaska-cool-programacion.vercel.app/registerprograming/{id}',
         'start': {
             'dateTime': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
             'timeZone': 'America/Managua',
@@ -369,7 +369,7 @@ def get_proforma_or_factura(referencia):
 
 def update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
     codeCalenderEvent = create_google_calendar_event(
-        horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
+        horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia, id)
     conn.execute(programacion.update().where(programacion.c.id == id), {
         "CodeGoogleCalendar": codeCalenderEvent
     })
