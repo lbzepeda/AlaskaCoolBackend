@@ -5,8 +5,11 @@ WORKDIR /app
 
 # Actualizar el sistema e instalar dependencias necesarias
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    unixodbc \
+    unixodbc-dev \
     freetds-dev \
     gcc \
+    g++ \
     python3-dev \
     libgssapi-krb5-2 \
     libkrb5-3 \
