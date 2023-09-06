@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn_sql
 from models.index import det_proforma, productos
 from typing import Optional
 from datetime import datetime
@@ -18,7 +18,7 @@ class DetalleProforma:
     Producto: str
     @strawberry.field
     def producto(self, info: Info) -> typing.List[Optional[Productos]]:
-        current_productos = conn.execute(productos.select()).fetchall()
+        current_productos = conn_sql.execute(productos.select()).fetchall()
 
         matching_products = [
             Productos(**dict(prod._mapping))
@@ -65,13 +65,11 @@ class DetalleProforma:
 
 @strawberry.field
 def detalle_proforma_por_id(NoFactura: str) -> typing.List[DetalleProforma]:
-    result = conn.execute(det_proforma.select().where(det_proforma.c.NoFactura == NoFactura)).fetchall()
-    conn.commit()
+    result = conn_sql.execute(det_proforma.select().where(det_proforma.c.NoFactura == NoFactura)).fetchall()
     return result
 @strawberry.field
 def detalles_proforma(self) -> typing.List[DetalleProforma]:
-    result = conn.execute(det_proforma.select()).fetchall()
-    conn.commit()
+    result = conn_sql.execute(det_proforma.select()).fetchall()
     return result
 
 lstDetalleProformaQuery = [detalle_proforma_por_id, detalles_proforma]

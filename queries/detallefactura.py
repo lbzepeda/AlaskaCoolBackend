@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn_sql
 from models.index import det_facturas, productos
 from typing import Optional
 from datetime import datetime
@@ -19,7 +19,7 @@ class DetalleFactura:
     Producto: str
     @strawberry.field
     def producto(self, info: Info) -> typing.List[Optional[Productos]]:
-        current_productos = conn.execute(productos.select()).fetchall()
+        current_productos = conn_sql.execute(productos.select()).fetchall()
 
         matching_products = [
             Productos(**dict(prod._mapping))
@@ -84,13 +84,11 @@ class DetalleFactura:
 
 @strawberry.field
 def detalle_factura_por_id(NoFactura: str) -> typing.List[DetalleFactura]:
-    result = conn.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchall()
-    conn.commit()
+    result = conn_sql.execute(det_facturas.select().where(det_facturas.c.NoFactura == NoFactura)).fetchall()
     return result
 @strawberry.field
 def detalles_factura(self) -> typing.List[DetalleFactura]:
-    result = conn.execute(det_facturas.select()).fetchall()
-    conn.commit()
+    result = conn_sql.execute(det_facturas.select()).fetchall()
     return result
 
 lstDetalleFacturaQuery = [detalle_factura_por_id, detalles_factura]

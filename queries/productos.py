@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn_sql
 from models.index import productos
 from strawberry.types import Info
 from typing import Optional
@@ -153,17 +153,17 @@ class Productos:
 
 @strawberry.field
 def producto_por_id(CodProducto: str) -> Optional[Productos]:
-    result = conn.execute(productos.select().where(productos.c.CodProducto == CodProducto)).fetchone()
+    result = conn_sql.execute(productos.select().where(productos.c.CodProducto == CodProducto)).fetchone()
     return result
 
 @strawberry.field
 def lista_servicio(self) -> typing.List[Productos]:
-    result = conn.execute(productos.select().where(productos.c.EsServicio == 'S')).fetchall()
+    result = conn_sql.execute(productos.select().where(productos.c.EsServicio == 'S')).fetchall()
     return result
 
 @strawberry.field
 def lista_productos(self) -> typing.List[Productos]:
-    result = conn.execute(productos.select()).fetchall()
+    result = conn_sql.execute(productos.select()).fetchall()
     return result
 
 lstProductoQuery = [producto_por_id, lista_servicio, lista_productos]
