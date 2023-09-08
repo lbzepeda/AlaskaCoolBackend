@@ -22,4 +22,11 @@ def lista_archivo_programacion(self) -> typing.List[ArchivoProgramacion]:
     conn.commit()
     return result
 
-lstArchivoProgramacionQuery = [archivo_programacion_por_id, lista_archivo_programacion]
+@strawberry.field
+def cantidad_archivos_por_id(id: int) -> int:
+    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.id == id)).fetchall()
+    conn.commit()
+    return len(result)
+
+
+lstArchivoProgramacionQuery = [archivo_programacion_por_id, lista_archivo_programacion, cantidad_archivos_por_id]
