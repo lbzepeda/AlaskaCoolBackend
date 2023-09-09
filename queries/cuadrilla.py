@@ -13,12 +13,10 @@ class Cuadrilla:
 @strawberry.field
 def cuadrilla_por_id(id: int) -> Cuadrilla:
     result = conn.execute(cuadrillas.select().where(cuadrillas.c.id == id)).fetchone()
-    conn.commit()
     return result
 @strawberry.field
 def lista_cuadrilla(self) -> typing.List[Cuadrilla]:
     result = conn.execute(cuadrillas.select()).fetchall()
-    conn.commit()
     return result
 
 lstCuadrillaQuery = [cuadrilla_por_id, lista_cuadrilla]

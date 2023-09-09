@@ -13,19 +13,16 @@ class ArchivoProgramacion:
 @strawberry.field
 def archivo_programacion_por_id(id: int) -> ArchivoProgramacion:
     result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.id == id)).fetchone()
-    conn.commit()
     return result
 
 @strawberry.field
 def lista_archivo_programacion(self) -> typing.List[ArchivoProgramacion]:
     result = conn.execute(archivo_programacion.select()).fetchall()
-    conn.commit()
     return result
 
 @strawberry.field
 def cantidad_archivos_por_id(id: int) -> int:
     result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.id == id)).fetchall()
-    conn.commit()
     return len(result)
 
 

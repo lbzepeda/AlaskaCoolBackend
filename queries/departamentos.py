@@ -13,13 +13,11 @@ class Departamentos:
 @strawberry.field
 def departamento_por_id(id: int) -> Optional[Departamentos]:
     result = conn.execute(departamentos.select().where(departamentos.c.id == id)).fetchone()
-    conn.commit()
     return result
 
 @strawberry.field
 def lista_departamentos(self) -> typing.List[Departamentos]:
     result = conn.execute(departamentos.select()).fetchall()
-    conn.commit()
     return result
 
 lstDepartamentosQuery = [departamento_por_id, lista_departamentos]

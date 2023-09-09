@@ -79,7 +79,6 @@ class Programacion:
 @strawberry.field
 def programacion_por_id(id: int) -> Optional[Programacion]:
     result = conn.execute(programacion.select().where(and_(programacion.c.id == id, programacion.c.idEstado == 1))).fetchone()
-    conn.commit()
     return result
 
 @strawberry.field
