@@ -5,27 +5,36 @@ from strawberry.file_uploads import Upload
 from conn.db import conn
 from models.index import archivo_programacion
 from strawberry.types import Info
+import boto3
+import os
 
-SAVE_PATH = "files/programation/"
+AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY')
+AWS_SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
+BUCKET_NAME = os.environ.get('BUCKET_NAME')
+
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
+
 
 @strawberry.mutation
 async def cargar_archivo_programacion(self, file: Upload, idTipoArchivo: int, idProgramacion: int) -> int:
     # Crear un nombre de archivo seguro usando el id
-    filename = os.path.join(SAVE_PATH, f"{idProgramacion}_{file.filename}")
+    filename = f"{idProgramacion}_{file.filename}"
 
-    # Guardar el archivo en el sistema de archivos
-    with open(filename, 'wb') as buffer:
-        content = await file.read()
-        buffer.write(content)
+    # Leer el contenido del archivo y subirlo a S3
+    content = await file.read()
+    s3.put_object(Bucket=BUCKET_NAME, Key=filename, Body=content)
 
-    # Guardar la ruta del archivo en la base de datos
+    # Guardar la ruta del archivo en la base de datos (esto será una URL de S3)
+    path_in_s3 = f"https://{BUCKET_NAME}.s3.amazonaws.com/{filename}"
+    
     archivoprogramacion = {
-        "PathArchivo": filename,
+        "PathArchivo": path_in_s3,
         "idTipoArchivo": idTipoArchivo,
         "idProgramacion": idProgramacion
     }
     result = conn.execute(archivo_programacion.insert(), archivoprogramacion)
     conn.commit()
+    
     return int(result.inserted_primary_key[0])
 
 @strawberry.mutation
