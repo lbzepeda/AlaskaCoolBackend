@@ -1,13 +1,13 @@
-import typing
-import os
-import strawberry
-from strawberry.file_uploads import Upload
-from conn.db import conn
-from models.index import archivo_programacion
-from strawberry.types import Info
-from google.cloud import storage
 import os
 from datetime import timedelta
+
+from google.cloud import storage
+import strawberry
+from strawberry.file_uploads import Upload
+from strawberry.types import Info
+
+from conn.db import conn
+from models.index import archivo_programacion
 
 GCP_CREDENTIALS = os.environ.get('GCP_CREDENTIALS')
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
