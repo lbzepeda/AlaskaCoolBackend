@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "alaskacool",
+  "private_key_id": "6ae7d248348e3a7a1f380312e455f293bcd3b4e1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC6AKqDZI8UwK5Z\n7zvbtVAyX3FCaVFay6A8o3sDupkaOzlfK3E1dG8TdYxF5oV9wiIbku9TKGxfL3N3\n3vODFAa/Z9wb/FJ9LGH1GuJiP5lk7IinmfCwxWA5PIsYiNh4TNS/qDtn3Zz2cyIK\nJMU603XkbWw7gWx0yG3cvQGVy2V4i94/N5Ocw/AInUvfeI13g5l7TUveK6B48saq\nJKsKQuOr545W0hLbxr3Z6v0bEcdMBRFA7UaXBum4BwCZHsG7bJoNHxaMK8D1mGi0\ny1ZjFglEXxR+2izPR11bZMfjdxezQxwPJ6g4Odb6Vwho7G6yTMrm1BZK+/3JYnDD\nFW/uUIdrAgMBAAECggEAIHOBTE89D1fWk2ZDwT9O8JrqPbX2NasVF79F9Q6XK5Zt\nmgcQR007G+AESyW+4IQAQ2NNUerZjXnP4XgKcDIMQ1SxeEh7c89Mf+Di4lVKQ+to\npCUdcxncgd/oPK2TZtmwvIdzZdmqSu0nYTGtH2hJR0M4AOHBtFZLpJltL18/Itqn\n7pGvqtUNM+oidT7Tyuw3vg0srvVgD/uVXuBNAcJwwcKXZ1V17yHljs0nvV8w9fLp\nsksy4NKpLfctNnRIAWbL4tsSazSvp2+dd6OGtGGbPt1Usm89njF0DqHXTP6HRGi/\nn+1/GHWDULg1WatSL/IumkBzyl8SjrKidPG/9k7q8QKBgQDoaA1HNz+iD9VXj/uT\nQDaG1PjJaZPC5AJixRB0+k2MpLKwLyqqLVo45ED/CxGoCXT7IQH0d/zp4icc4UVe\nSTOteL9Umkg6Yd46772VWsnrMAfChifSXqX5qAORsH7broPTgeEKHbwnh+JOmbDq\nMmXSLNkwSMQ2RhveazZrtSkG9QKBgQDM4qMbLFF63P0CQCUkoIflr5QrIkniB32u\nfGTFTuKFdY5PRIRRm2WQLvb/7nC7sP1xq5BkyyJQbFK4eF1AZDvC2oVX25vnvoHf\nJ63Ujtm3WLSPMHKWUmF8DvRbKunPUc+ge23GrIupTqTFlsvXtwQ+ncpm8/V8bIvR\niRQPGmqY3wKBgAlwoIlx/w2wIvRJjuhuRUi4wdo8hZn29PnaE08NE7VQw0lQwSTk\nbrO84b76Th9LMws4TgIGFanSW9BafhzUUFsNeogPNDva2dH/Bu5YH7eD3ezS0i9D\nVO6NGogCaUS3E/e1YNSuXIQmitSyfXMl1OjylWfWrNGfi2Y/aJh7ZU05AoGBALPv\nRneS0GwqsDjNxNEJ+s+JB4NqNaDAG2yl6oot4Vp8B2MuNVbGNsgNtvbFnVP4+Fxf\n5AvhKl2fBHblnl/yp1lVOE4UnDNGaCBnZI6MdkBDMy+dyMSjzOF68LcwVO6yVroG\nLD6TQoSKgMLW0Ga+YIftY9hO4IVJfvGihW9OL9fZAoGBALG7m2ZmSJ3zOqQwrPp1\no5sp8U46KSjONgn98gEc3S/KynEDqb+CTcWRR2eItxIUkeyZkziG7g0vdfHj0pzS\nLIwetIzwyBjA4saduk/CHTKcDUgsV6KSNR7XpAWpmoRDfnsF175GZrUDWOV+WXO1\n2Z/p1TenJJB5LU0WXfGex3fM\n-----END PRIVATE KEY-----\n",
+  "client_email": "alaskastogare@alaskacool.iam.gserviceaccount.com",
+  "client_id": "104903096598567423505",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/alaskastogare%40alaskacool.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
