@@ -7,8 +7,9 @@ from models.index import archivo_programacion
 from strawberry.types import Info
 from google.cloud import storage
 import os
+from datetime import timedelta
 
-GCP_CREDENTIALS = os.environ.get('GCP_CREDENTIALS') # Ruta al archivo JSON de credenciales
+GCP_CREDENTIALS = os.environ.get('GCP_CREDENTIALS')
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
 
 try:
@@ -19,6 +20,10 @@ except Exception as e:
     print(str(e))# Esto imprimirá todo el rastro del error, lo cual puede ser útil para el diagnóstico
     client, bucket = None, None  # Establece las variables a None para evitar futuras operaciones con ellas
 
+def generate_signed_url(blob: storage.Blob, expiration_time: timedelta = timedelta(hours=1)) -> str:
+    # Asegúrate de que tu cuenta de servicio tiene los permisos necesarios para firmar URLs.
+    # Por defecto, esta función genera una URL que expira en 1 hora.
+    return blob.generate_signed_url(expiration=expiration_time, method='GET')
 
 @strawberry.mutation
 async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, idProgramacion: int) -> int:
@@ -39,7 +44,7 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
     path_in_gcs = blob.public_url  # **Obtener URL pública del archivo en GCS**
 
     archivoprogramacion = {
-        "PathArchivo": path_in_gcs,
+        "PathArchivo": generate_signed_url(blob),
         "idTipoArchivo": idTipoArchivo,
         "idProgramacion": idProgramacion
     }
