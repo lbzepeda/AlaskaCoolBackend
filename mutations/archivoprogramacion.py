@@ -30,28 +30,37 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
     # **Imprimir información de upload**
     print(f"Nombre del archivo: {upload}")
     print(f"Tipo de contenido: {upload.content_type}")
-    # Si necesitas más detalles, puedes agregar más líneas de print aquí
     
     # Crear un nombre de archivo seguro usando el id
-    filename = f"{idProgramacion}_{upload.filename}"  # Nota: Modifiqué esta línea para usar 'upload.filename'
+    filename = f"{idProgramacion}_{upload.filename}"
 
     # Leer el contenido del archivo y subirlo a GCS
     content = await upload.read()
-    blob = bucket.blob(filename)  # **Crear un objeto blob (es similar a un objeto en S3)**
-    blob.upload_from_string(content)
+    blob = bucket.blob(filename)
+    
+    try:
+        blob.upload_from_string(content)
+        print(f"Archivo {filename} subido con éxito a Google Cloud Storage.")
+    except Exception as e:
+        print(f"Error al subir el archivo {filename} a Google Cloud Storage. Detalle del error: {str(e)}")
+        return 0  # Retorna 0 o algún otro valor para indicar que hubo un error.
 
     # Guardar la ruta del archivo en la base de datos (esto será una URL de GCS)
-    path_in_gcs = blob.public_url  # **Obtener URL pública del archivo en GCS**
+    path_in_gcs = generate_signed_url(blob)
 
     archivoprogramacion = {
-        "PathArchivo": generate_signed_url(blob),
+        "PathArchivo": path_in_gcs,
         "idTipoArchivo": idTipoArchivo,
         "idProgramacion": idProgramacion
     }
-    result = conn.execute(archivo_programacion.insert(), archivoprogramacion)
-    conn.commit()
-
-    return int(result.inserted_primary_key[0])
+    
+    try:
+        result = conn.execute(archivo_programacion.insert(), archivoprogramacion)
+        conn.commit()
+        return int(result.inserted_primary_key[0])
+    except Exception as e:
+        print(f"Error al guardar la ruta del archivo {filename} en la base de datos. Detalle del error: {str(e)}")
+        return 0  # Retorna 0 o algún otro valor para indicar que hubo un error.
 
 
 @strawberry.mutation
