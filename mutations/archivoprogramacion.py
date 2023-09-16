@@ -28,7 +28,7 @@ def generate_signed_url(blob: storage.Blob, expiration_time: timedelta = timedel
 @strawberry.mutation
 async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, idProgramacion: int) -> int:
     # **Imprimir información de upload**
-    print(f"Nombre del archivo: {upload}")
+    print(f"Nombre del archivo: {upload.filename}")
     print(f"Tipo de contenido: {upload.content_type}")
     
     # Crear un nombre de archivo seguro usando el id
@@ -40,13 +40,15 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
     
     try:
         blob.upload_from_string(content)
+        blob.make_public()
+        
         print(f"Archivo {filename} subido con éxito a Google Cloud Storage.")
     except Exception as e:
         print(f"Error al subir el archivo {filename} a Google Cloud Storage. Detalle del error: {str(e)}")
         return 0  # Retorna 0 o algún otro valor para indicar que hubo un error.
 
     # Guardar la ruta del archivo en la base de datos (esto será una URL de GCS)
-    path_in_gcs = generate_signed_url(blob)
+    path_in_gcs = blob.public_url
 
     archivoprogramacion = {
         "PathArchivo": path_in_gcs,
