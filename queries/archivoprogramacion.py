@@ -23,7 +23,7 @@ def lista_archivo_programacion(self) -> typing.List[ArchivoProgramacion]:
 
 @strawberry.field
 def cantidad_archivos_por_id(id: int) -> int:
-    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.id == id)).fetchall()
+    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.idProgramacion == id)).fetchall()
     return len(result)
 
 
