@@ -26,7 +26,7 @@ class ArchivoProgramacion:
     NombreArchivo: str
 
 @strawberry.field
-def archivo_programacion_por_id(codProgramacion: int) -> typing.List[ArchivoProgramacion]:
+def archivo_programacion_por_id(codProgramacion: str) -> typing.List[ArchivoProgramacion]:
     result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.codProgramacion == codProgramacion)).fetchall()
     return result
 
@@ -36,7 +36,7 @@ def lista_archivo_programacion(self) -> typing.List[ArchivoProgramacion]:
     return result
 
 @strawberry.field
-def cantidad_archivos_por_id(codProgramacion: int) -> int:
+def cantidad_archivos_por_id(codProgramacion: str) -> int:
     result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.codProgramacion == codProgramacion)).fetchall()
     return len(result)
 
