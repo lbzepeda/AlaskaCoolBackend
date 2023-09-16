@@ -11,6 +11,7 @@ from .tipoarchivo import *
 class ArchivoProgramacion:
     id: int
     PathArchivo: str
+    idTipoArchivo: int
     codProgramacion: str
     @strawberry.field
     def tipoarchivo(self, info: Info) -> typing.List[Optional[TipoArchivo]]:
