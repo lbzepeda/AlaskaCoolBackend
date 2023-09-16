@@ -26,8 +26,8 @@ class ArchivoProgramacion:
     NombreArchivo: str
 
 @strawberry.field
-def archivo_programacion_por_id(id: int) -> ArchivoProgramacion:
-    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.idProgramacion == id)).fetchone()
+def archivo_programacion_por_id(id: int) -> typing.List[ArchivoProgramacion]:
+    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.idProgramacion == id)).fetchall()
     return result
 
 @strawberry.field
