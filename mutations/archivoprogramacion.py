@@ -53,7 +53,8 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
     archivoprogramacion = {
         "PathArchivo": path_in_gcs,
         "idTipoArchivo": idTipoArchivo,
-        "idProgramacion": idProgramacion
+        "idProgramacion": idProgramacion,
+        "NombreArchivo": filename
     }
     
     try:

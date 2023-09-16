@@ -9,6 +9,7 @@ class ArchivoProgramacion:
     PathArchivo: str
     idTipoArchivo: int
     idProgramacion: int
+    NombreArchivo: str
 
 @strawberry.field
 def archivo_programacion_por_id(id: int) -> ArchivoProgramacion:
