@@ -26,13 +26,13 @@ def generate_signed_url(blob: storage.Blob, expiration_time: timedelta = timedel
     return blob.generate_signed_url(expiration=expiration_time, method='GET')
 
 @strawberry.mutation
-async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, idProgramacion: int) -> int:
+async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, codProgramacion: str) -> int:
     # **Imprimir información de upload**
     print(f"Nombre del archivo: {upload.filename}")
     print(f"Tipo de contenido: {upload.content_type}")
     
     # Crear un nombre de archivo seguro usando el id
-    filename = f"{idProgramacion}_{upload.filename}"
+    filename = f"{codProgramacion}_{upload.filename}"
 
     # Leer el contenido del archivo y subirlo a GCS
     content = await upload.read()
@@ -53,7 +53,7 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
     archivoprogramacion = {
         "PathArchivo": path_in_gcs,
         "idTipoArchivo": idTipoArchivo,
-        "idProgramacion": idProgramacion,
+        "codProgramacion": codProgramacion,
         "NombreArchivo": filename
     }
     
@@ -67,21 +67,21 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
 
 
 @strawberry.mutation
-async def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int, idProgramacion:int, info: Info) -> int:
+async def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int, codProgramacion:str, info: Info) -> int:
     archivoprogramacion =  {
         "PathArchivo": PathArchivo,
         "idTipoArchivo": idTipoArchivo,
-        "idProgramacion": idProgramacion
+        "codProgramacion": codProgramacion
     }
     result = conn.execute(archivo_programacion.insert(),archivoprogramacion)
     conn.commit();
     return int(result.inserted_primary_key[0])
 @strawberry.mutation
-def actualizar_archivo_programacion(self, id:int, PathArchivo: str, idTipoArchivo: int, idProgramacion: int, info: Info) -> str:
+def actualizar_archivo_programacion(self, id:int, PathArchivo: str, idTipoArchivo: int, codProgramacion: str, info: Info) -> str:
     result = conn.execute(archivo_programacion.update().where(archivo_programacion.c.id == id), {
         "PathArchivo": PathArchivo,
         "idTipoArchivo": idTipoArchivo,
-        "idProgramacion": idProgramacion
+        "codProgramacion": codProgramacion
     })
     print(result. returns_rows)
     conn.commit();

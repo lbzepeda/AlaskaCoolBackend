@@ -88,4 +88,9 @@ def lista_programacion(self, page: int = 1, perPage: int = 10) -> typing.List[Pr
     result = conn.execute(query).fetchall()
     return result
 
-lstProgramacionQuery = [programacion_por_id, lista_programacion]
+@strawberry.field
+def cantidad_programacion() -> int:
+    result = conn.execute(programacion.select().where(programacion.c.idEstado == 1)).fetchall()
+    return len(result)
+
+lstProgramacionQuery = [programacion_por_id, lista_programacion, cantidad_programacion]

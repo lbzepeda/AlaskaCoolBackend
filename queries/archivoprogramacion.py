@@ -11,7 +11,7 @@ from .tipoarchivo import *
 class ArchivoProgramacion:
     id: int
     PathArchivo: str
-    idTipoArchivo: int
+    codProgramacion: str
     @strawberry.field
     def tipoarchivo(self, info: Info) -> typing.List[Optional[TipoArchivo]]:
         current_det_proformas = conn.execute(tipo_archivo.select()).fetchall()
@@ -19,15 +19,14 @@ class ArchivoProgramacion:
         matched_proformas = [
             TipoArchivo(**dict(det._mapping))
             for det in current_det_proformas 
-            if det.id == self.idTipoArchivo
+            if det.id == self.codProgramacion
         ]
         return matched_proformas or []
-    idProgramacion: int
     NombreArchivo: str
 
 @strawberry.field
-def archivo_programacion_por_id(id: int) -> typing.List[ArchivoProgramacion]:
-    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.idProgramacion == id)).fetchall()
+def archivo_programacion_por_id(codProgramacion: int) -> typing.List[ArchivoProgramacion]:
+    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.codProgramacion == codProgramacion)).fetchall()
     return result
 
 @strawberry.field
@@ -36,8 +35,8 @@ def lista_archivo_programacion(self) -> typing.List[ArchivoProgramacion]:
     return result
 
 @strawberry.field
-def cantidad_archivos_por_id(id: int) -> int:
-    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.idProgramacion == id)).fetchall()
+def cantidad_archivos_por_id(codProgramacion: int) -> int:
+    result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.codProgramacion == codProgramacion)).fetchall()
     return len(result)
 
 
