@@ -1,7 +1,7 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import programacion, productos, proforma, usuarios, usuario_cuadrilla, facturas, horario_programacion, departamentos, estado_programacion
+from models.index import programacion, productos, proforma, usuarios, usuario_cuadrilla, facturas, horario_programacion, departamentos, estado_programacion, archivo_programacion
 from strawberry.types import Info
 from typing import Optional
 from sqlalchemy import and_
@@ -15,6 +15,7 @@ from .horarioprogramacion import HorarioProgramacion
 from .departamentos import Departamentos
 from .estadoprogramacion import EstadoProgramacion
 from .usuario import Usuario
+from .archivoprogramacion import ArchivoProgramacion
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstUsuarios = conn.execute(usuarios.select()).fetchall()
@@ -42,6 +43,12 @@ class Programacion:
         matching_proforma_query = proforma.select().where(proforma.c.NoFactura == self.codproforma)
         result = conn.execute(matching_proforma_query).fetchone()
         return Proforma(**dict(result._mapping)) if result else None
+    @strawberry.field
+    def archivos_programacion(self, info: Info) -> typing.List[Optional[ArchivoProgramacion]]: 
+        cod_doc = self.codproforma if self.codproforma else self.codfactura
+        matching_factura_query = archivo_programacion.select().where(archivo_programacion.c.codProgramacion == cod_doc)
+        result = conn.execute(matching_factura_query).fetchall()
+        return [ArchivoProgramacion(**dict(r._mapping)) for r in result] if result else []
     idUsuarioCreacion: int
     @strawberry.field
     def usuario_creacion(self, info: Info) -> Optional[Usuario]:  
@@ -93,4 +100,15 @@ def cantidad_programacion() -> int:
     result = conn.execute(programacion.select().where(programacion.c.idEstado == 1)).fetchall()
     return len(result)
 
-lstProgramacionQuery = [programacion_por_id, lista_programacion, cantidad_programacion]
+@strawberry.field
+def cerrar_programacion(id: str) -> bool:
+    matching_factura_query = archivo_programacion.select().where(archivo_programacion.c.codProgramacion == id, archivo_programacion.c.idTipoArchivo == 1)
+    result = conn.execute(matching_factura_query).fetchone()
+    
+    if not result or result[0] == 0:
+        return False
+    else:
+        return True
+
+
+lstProgramacionQuery = [programacion_por_id, lista_programacion, cantidad_programacion, cerrar_programacion]
