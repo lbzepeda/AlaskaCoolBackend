@@ -102,8 +102,7 @@ def cantidad_programacion() -> int:
 
 @strawberry.field
 def cerrar_programacion(id: str) -> bool:
-    matching_factura_query = archivo_programacion.select().where(archivo_programacion.c.codProgramacion == id, archivo_programacion.c.idTipoArchivo == 1,
-                            archivo_programacion.c.idEstadoProgramacion != 3)
+    matching_factura_query = archivo_programacion.select().where(archivo_programacion.c.codProgramacion == id, archivo_programacion.c.idTipoArchivo == 1)
     result = conn.execute(matching_factura_query).fetchone()
     
     if not result or result[0] == 0:
