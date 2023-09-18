@@ -17,6 +17,7 @@ from datetime import timedelta
 from enum import Enum
 from json import dumps
 from httplib2 import Http
+from .programacion import programacion
 
 
 class TipoUsuario(Enum):
@@ -89,7 +90,6 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
     print(f"Evento calendario: {created_event['id']}")
     return created_event['id']  # Retorna el ID del evento creado
 
-
 def delete_google_calendar_event(event_id):
     # Carga las credenciales de la cuenta de servicio
     creds = Credentials.from_service_account_file('alaskacool-ee34eec8f111.json',
@@ -102,7 +102,6 @@ def delete_google_calendar_event(event_id):
 
     # Eliminar el evento
     service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
-
 
 def send_message(text: str):
     url = webhook_programing
@@ -267,7 +266,6 @@ class Productos:
     def from_row(cls, row):
         return cls(**row._asdict())
 
-
 @strawberry.type
 class Usuario:
     id: int
@@ -280,6 +278,28 @@ class Usuario:
     def from_row(cls, row):
         return cls(**row._asdict())
 
+@strawberry.type
+class Programacion:
+    id: int
+    codservicio: str
+    codcliente: Optional[str] = None
+    codfactura: Optional[str] = None
+    codproforma: Optional[str] = None
+    idUsuarioCreacion: int
+    idDepartamento: Optional[int] = None
+    idCuadrilla: Optional[int] = None
+    idHorarioProgramacion: Optional[int] = None
+    idEstadoProgramacion: Optional[int] = None
+    CodeGoogleCalendar: Optional[str] = None
+    UrlGeoLocalizacion: str
+    direccion: Optional[int]
+    observaciones: Optional[str] = None
+    idEstado: Optional[int] = None
+    codeGoogleCalendar: Optional[str] = None
+
+    @classmethod
+    def from_row(cls, row):
+        return cls(**row._asdict())
 
 @strawberry.type
 class HorarioProgramacion:
@@ -292,7 +312,6 @@ class HorarioProgramacion:
     @classmethod
     def from_row(cls, row):
         return cls(**row._asdict())
-
 
 @strawberry.mutation
 async def crear_programacion(
@@ -343,22 +362,18 @@ async def crear_programacion(
     conn.commit()
     return int(result.inserted_primary_key[0])
 
-
 def get_usuario(idUsuarioActualizador):
     usuario_row = conn.execute(usuarios.select().where(
         usuarios.c.id == idUsuarioActualizador)).fetchone()
     return Usuario.from_row(usuario_row)
-
 
 def get_servicio(codservicio):
     servicio_row = conn.execute(productos.select().where(
         productos.c.CodProducto == codservicio)).fetchone()
     return Productos.from_row(servicio_row)
 
-
 def get_referencia(codfactura, codproforma):
     return codfactura if codfactura else codproforma
-
 
 def get_proforma_or_factura(referencia):
     proformaobj = conn.execute(proforma.select().where(
@@ -367,7 +382,6 @@ def get_proforma_or_factura(referencia):
         return None, conn.execute(facturas.select().where(facturas.c.NoFactura == referencia)).fetchone()
     return proformaobj, None
 
-
 def update_google_calendar_event(id, horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia):
     codeCalenderEvent = create_google_calendar_event(
         horario_row, servicio, facturaobj, proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia, id)
@@ -375,11 +389,9 @@ def update_google_calendar_event(id, horario_row, servicio, facturaobj, proforma
         "CodeGoogleCalendar": codeCalenderEvent
     })
 
-
 def notify_update(idUsuarioActualizador, text):
     # if idUsuarioActualizador != 1:
     send_message(text)
-
 
 @strawberry.mutation
 def eliminar_programacion(self, id: int,
@@ -401,7 +413,6 @@ def eliminar_programacion(self, id: int,
 
     conn.commit()
     return str(resultUpd.rowcount) + " Row(s) updated"
-
 
 @strawberry.mutation
 def actualizar_programacion(self, id: int,
@@ -456,6 +467,24 @@ def actualizar_programacion(self, id: int,
     conn.commit()
     return str(result.rowcount) + " Row(s) updated"
 
+@strawberry.mutation
+def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
+    resultUpd = conn.execute(programacion.update().where(
+     (programacion.c.id == id) ), { #& programacion.c.idEstado == 1
+        "idEstadoProgramacion": 3
+    })
+
+    programacion_row = conn.execute(programacion.select().where(
+        programacion.c.id == id)).fetchone()
+    resultProgramacion= Programacion.from_row(programacion_row)
+
+    usuario = get_usuario(idUsuarioActualizador)
+    text = f"El usuario *{usuario.nombre}* FINALIZÓ programación con la referencia: *{get_referencia(resultProgramacion.codfactura, resultProgramacion.codproforma)}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
+    notify_update(idUsuarioActualizador, text)
+
+    conn.commit()
+    return str(resultUpd.rowcount) + " Row(s) updated"
+
 
 lstProgramacionMutation = [crear_programacion,
-                           actualizar_programacion, eliminar_programacion]
+                           actualizar_programacion, eliminar_programacion, cerrar_programacion]
