@@ -20,7 +20,7 @@ class ArchivoProgramacion:
         matched_proformas = [
             TipoArchivo(**dict(det._mapping))
             for det in current_det_proformas 
-            if det.id == self.codProgramacion
+            if det.id == self.idTipoArchivo
         ]
         return matched_proformas or []
     NombreArchivo: str
