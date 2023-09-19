@@ -112,7 +112,7 @@ def lista_programacion(
         query = query.where(and_(programacion.c.FechaCreacion >= fechaInicio, programacion.c.FechaCreacion <= fechaFin))
     
     if codServicio:
-        query = query.where(programacion.c.codServicio == codServicio)
+        query = query.where(programacion.c.codservicio == codServicio)
 
     query = query.limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
@@ -131,7 +131,7 @@ def cantidad_programacion(
         query = query.where(and_(programacion.c.FechaCreacion >= fechaInicio, programacion.c.FechaCreacion <= fechaFin))
     
     if codServicio:
-        query = query.where(programacion.c.codServicio == codServicio)
+        query = query.where(programacion.c.codservicio == codServicio)
         
     result = conn.execute(query).fetchall()
     
