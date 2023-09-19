@@ -469,15 +469,15 @@ def actualizar_programacion(self, id: int,
 
 @strawberry.mutation
 def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
-    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
-        "idEstadoProgramacion": 3
-    })
-
     programacion_row = conn.execute(programacion.select().where(
         programacion.c.id == id)).fetchone()
     resultProgramacion= Programacion.from_row(programacion_row)
-
     usuario = get_usuario(idUsuarioActualizador)
+
+    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
+        "idEstadoProgramacion": 3
+    })
+    
     text = f"El usuario *{usuario.nombre}* FINALIZÓ programación con la referencia: *{get_referencia(resultProgramacion.codfactura, resultProgramacion.codproforma)}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
     notify_update(idUsuarioActualizador, text)
 
