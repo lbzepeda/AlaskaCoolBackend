@@ -394,8 +394,8 @@ def notify_update(idUsuarioActualizador, text):
     send_message(text)
 
 @strawberry.mutation
-def eliminar_programacion(self, id: int,
-                          idUsuarioActualizador: Optional[int] = None) -> str:
+def eliminar_programacion(self, id: int, idUsuarioActualizador: Optional[int] = None) -> str:
+    
     event_row = conn.execute(programacion.select().where(
         programacion.c.id == id)).fetchone()
     usuario = get_usuario(idUsuarioActualizador)
@@ -469,8 +469,7 @@ def actualizar_programacion(self, id: int,
 
 @strawberry.mutation
 def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
-    resultUpd = conn.execute(programacion.update().where(
-     (programacion.c.id == id) ), { #& programacion.c.idEstado == 1
+    resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
         "idEstadoProgramacion": 3
     })
 
