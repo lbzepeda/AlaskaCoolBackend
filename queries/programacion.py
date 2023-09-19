@@ -114,8 +114,12 @@ def lista_programacion(
     return result
 
 @strawberry.field
-def cantidad_programacion() -> Optional[int]:
-    result = conn.execute(programacion.select().where(programacion.c.idEstado == 1)).fetchall()
+def cantidad_programacion(fechaInicio: Optional[datetime] = None, fechaFin: Optional[datetime] = None) -> Optional[int]:
+    query = programacion.select().where(programacion.c.idEstado == 1)
+    if fechaInicio and fechaFin:
+        query = query.where(and_(programacion.c.FechaCreacion >= fechaInicio, programacion.c.FechaCreacion <= fechaFin))
+    
+    result = conn.execute(query).fetchall()
     return len(result)
 
 @strawberry.field
