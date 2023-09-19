@@ -49,6 +49,11 @@ class Programacion:
         matching_factura_query = archivo_programacion.select().where(archivo_programacion.c.codProgramacion == cod_doc)
         result = conn.execute(matching_factura_query).fetchall()
         return [ArchivoProgramacion(**dict(r._mapping)) for r in result] if result else []
+    @strawberry.field
+    def cantidad_archivos_programacion(self, info: Info) -> int: 
+        cod_doc = self.codproforma if self.codproforma else self.codfactura
+        result = conn.execute(archivo_programacion.select().where(archivo_programacion.c.codProgramacion == cod_doc)).fetchall()
+        return len(result)
     idUsuarioCreacion: int
     @strawberry.field
     def usuario_creacion(self, info: Info) -> Optional[Usuario]:  
@@ -96,7 +101,7 @@ def lista_programacion(self, page: int = 1, perPage: int = 10) -> typing.List[Pr
     return result
 
 @strawberry.field
-def cantidad_programacion() -> int:
+def cantidad_programacion() -> Optional[int]:
     result = conn.execute(programacion.select().where(programacion.c.idEstado == 1)).fetchall()
     return len(result)
 
