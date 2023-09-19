@@ -7,6 +7,7 @@ from typing import Optional
 from sqlalchemy import and_
 from sqlalchemy.sql import func
 from sqlalchemy import select
+from datetime import datetime
 from .proforma import Proforma
 from .factura import Factura
 from .productos import Productos
@@ -84,6 +85,7 @@ class Programacion:
         return estadoprogramacion[0] if estadoprogramacion else None
     idEstado: int
     codeGoogleCalendar: Optional[str]
+    FechaCreacion: Optional[datetime] = None
     @classmethod
     def from_row(cls, row):
         return cls(**row)

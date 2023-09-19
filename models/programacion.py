@@ -1,6 +1,6 @@
 from conn.db import meta
 from sqlalchemy import ForeignKey
-from sqlalchemy import Table, Column, Integer, String
+from sqlalchemy import Table, Column, Integer, String, DateTime
 from sqlalchemy.sql.sqltypes import Integer, String, Text
 
 programacion = Table('programacion', meta,
@@ -19,4 +19,5 @@ programacion = Table('programacion', meta,
     Column('idEstadoProgramacion', Integer, ForeignKey('estado_programacion.id')),
     Column('idEstado', Integer, ForeignKey('estados.id')),
     Column('CodeGoogleCalendar', Text, nullable=True),
+    Column('FechaCreacion', DateTime, nullable=False),
 )

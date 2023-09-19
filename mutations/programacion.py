@@ -10,13 +10,13 @@ from slack_sdk.errors import SlackApiError
 import ssl
 from dotenv import load_dotenv
 from datetime import time
-from datetime import datetime
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from datetime import timedelta
 from enum import Enum
 from json import dumps
 from httplib2 import Http
+import pytz
 from .programacion import programacion
 
 
@@ -296,6 +296,7 @@ class Programacion:
     observaciones: Optional[str] = None
     idEstado: Optional[int] = None
     codeGoogleCalendar: Optional[str] = None
+    FechaCreacion: Optional[datetime] = None
 
     @classmethod
     def from_row(cls, row):
@@ -328,6 +329,9 @@ async def crear_programacion(
         idDepartamento: Optional[int] = None,
         idHorarioProgramacion: Optional[int] = None,
         idEstadoProgramacion: Optional[int] = None) -> int:
+    
+    utc_now = datetime.now(pytz.utc)
+    current_time_utc_6 = utc_now.astimezone(pytz.timezone('Etc/GMT+6'))
 
     data_programacion = {
         "codservicio": codservicio,
@@ -340,7 +344,8 @@ async def crear_programacion(
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
-        "idHorarioProgramacion": idHorarioProgramacion
+        "idHorarioProgramacion": idHorarioProgramacion,
+        "FechaCreacion": current_time_utc_6
     }
     result = conn.execute(programacion.insert(), data_programacion)
 
@@ -477,7 +482,7 @@ def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
     resultUpd = conn.execute(programacion.update().where(programacion.c.id == id), {
         "idEstadoProgramacion": 3
     })
-    
+
     text = f"El usuario *{usuario.nombre}* FINALIZÓ programación con la referencia: *{get_referencia(resultProgramacion.codfactura, resultProgramacion.codproforma)}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
     notify_update(idUsuarioActualizador, text)
 
