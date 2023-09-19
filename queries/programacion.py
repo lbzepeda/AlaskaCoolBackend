@@ -101,25 +101,40 @@ def lista_programacion(
     page: int = 1,
     perPage: int = 10,
     fechaInicio: Optional[datetime] = None,
-    fechaFin: Optional[datetime] = None
+    fechaFin: Optional[datetime] = None,
+    codServicio: Optional[str] = None,
 ) -> typing.List[Programacion]:
 
     offset = (page - 1) * perPage
     query = programacion.select().where(programacion.c.idEstado == 1).order_by(programacion.c.id.desc())
+
     if fechaInicio and fechaFin:
         query = query.where(and_(programacion.c.FechaCreacion >= fechaInicio, programacion.c.FechaCreacion <= fechaFin))
+    
+    if codServicio:
+        query = query.where(programacion.c.codServicio == codServicio)
 
     query = query.limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
+    
     return result
 
 @strawberry.field
-def cantidad_programacion(fechaInicio: Optional[datetime] = None, fechaFin: Optional[datetime] = None) -> Optional[int]:
+def cantidad_programacion(
+    fechaInicio: Optional[datetime] = None,
+    fechaFin: Optional[datetime] = None,
+    codServicio: Optional[str] = None
+) -> Optional[int]:
+
     query = programacion.select().where(programacion.c.idEstado == 1)
     if fechaInicio and fechaFin:
         query = query.where(and_(programacion.c.FechaCreacion >= fechaInicio, programacion.c.FechaCreacion <= fechaFin))
     
+    if codServicio:
+        query = query.where(programacion.c.codServicio == codServicio)
+        
     result = conn.execute(query).fetchall()
+    
     return len(result)
 
 @strawberry.field
