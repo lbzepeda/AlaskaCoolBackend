@@ -5,14 +5,11 @@ from strawberry.types import Info
 from datetime import datetime
 from typing import Optional
 import os
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
 import ssl
 from dotenv import load_dotenv
 from datetime import time
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
-from datetime import timedelta
 from enum import Enum
 from json import dumps
 from httplib2 import Http

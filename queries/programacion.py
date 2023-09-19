@@ -96,9 +96,20 @@ def programacion_por_id(id: int) -> Optional[Programacion]:
     return result
 
 @strawberry.field
-def lista_programacion(self, page: int = 1, perPage: int = 10) -> typing.List[Programacion]:
+def lista_programacion(
+    self,
+    page: int = 1,
+    perPage: int = 10,
+    fecha_inicio: Optional[datetime] = None,
+    fecha_fin: Optional[datetime] = None
+) -> typing.List[Programacion]:
+
     offset = (page - 1) * perPage
-    query = programacion.select().where(programacion.c.idEstado == 1).order_by(programacion.c.id.desc()).limit(perPage).offset(offset)
+    query = programacion.select().where(programacion.c.idEstado == 1).order_by(programacion.c.id.desc())
+    if fecha_inicio and fecha_fin:
+        query = query.where(and_(programacion.c.FechaCreacion >= fecha_inicio, programacion.c.FechaCreacion <= fecha_fin))
+
+    query = query.limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
     return result
 
