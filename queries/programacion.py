@@ -141,7 +141,7 @@ def cantidad_programacion(
 def lista_programacion_excel(
     self,
     page: int = 1,
-    perPage: int = 200,
+    perPage: int = 100,
     fechaInicio: Optional[datetime] = None,
     fechaFin: Optional[datetime] = None,
     codServicio: Optional[str] = None,
