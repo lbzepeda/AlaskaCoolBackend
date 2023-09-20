@@ -138,6 +138,30 @@ def cantidad_programacion(
     return len(result)
 
 @strawberry.field
+def lista_programacion_excel(
+    self,
+    page: int = 1,
+    perPage: int = 200,
+    fechaInicio: Optional[datetime] = None,
+    fechaFin: Optional[datetime] = None,
+    codServicio: Optional[str] = None,
+) -> typing.List[Programacion]:
+
+    offset = (page - 1) * perPage
+    query = programacion.select().where(programacion.c.idEstado == 1).order_by(programacion.c.id.desc())
+
+    if fechaInicio and fechaFin:
+        query = query.where(and_(programacion.c.FechaCreacion >= fechaInicio, programacion.c.FechaCreacion <= fechaFin))
+    
+    if codServicio:
+        query = query.where(programacion.c.codservicio == codServicio)
+
+    query = query.limit(perPage).offset(offset)
+    result = conn.execute(query).fetchall()
+    
+    return result
+
+@strawberry.field
 def cerrar_programacion(id: str) -> bool:
     matching_factura_query = archivo_programacion.select().where(archivo_programacion.c.codProgramacion == id, archivo_programacion.c.idTipoArchivo == 2)
     result = conn.execute(matching_factura_query).fetchone()
@@ -148,4 +172,4 @@ def cerrar_programacion(id: str) -> bool:
         return True
 
 
-lstProgramacionQuery = [programacion_por_id, lista_programacion, cantidad_programacion, cerrar_programacion]
+lstProgramacionQuery = [programacion_por_id, lista_programacion, cantidad_programacion, cerrar_programacion, lista_programacion_excel]
