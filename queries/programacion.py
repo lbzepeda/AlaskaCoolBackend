@@ -163,10 +163,21 @@ def lista_programacion_excel(
 
 @strawberry.field
 def cerrar_programacion(id: str) -> bool:
-    matching_factura_query = archivo_programacion.select().where(archivo_programacion.c.codProgramacion == id, archivo_programacion.c.idTipoArchivo == 2)
-    result = conn.execute(matching_factura_query).fetchone()
+    matching_factura_query_2 = archivo_programacion.select().where(
+        (archivo_programacion.c.codProgramacion == id) & 
+        (archivo_programacion.c.idTipoArchivo == 2)
+    )
+    result_2 = conn.execute(matching_factura_query_2).fetchone()
     
-    if not result or result[0] == 0:
+    matching_factura_query_1 = archivo_programacion.select().where(
+        (archivo_programacion.c.codProgramacion == id) & 
+        (archivo_programacion.c.idTipoArchivo == 1)
+    )
+    result_1 = conn.execute(matching_factura_query_1).fetchone()
+
+    if not result_2 or result_2[0] == 0:
+        return False
+    elif not result_1 or result_1[0] == 0:
         return False
     else:
         return True
