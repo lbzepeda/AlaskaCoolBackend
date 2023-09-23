@@ -41,7 +41,10 @@ connection_string_mysql = (
 engine = create_engine(
     connection_string_mysql, 
     echo=True, echo_pool=True, pool_use_lifo=True,
-    pool_pre_ping=True, pool_recycle=3600
+    pool_pre_ping=True, pool_recycle=3600,
+    pool_size=10,
+    max_overflow=5,
+    pool_timeout=30
 )
 
 meta = MetaData()
