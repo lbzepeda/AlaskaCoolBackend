@@ -20,4 +20,5 @@ programacion = Table('programacion', meta,
     Column('idEstado', Integer, ForeignKey('estados.id')),
     Column('CodeGoogleCalendar', Text, nullable=True),
     Column('FechaCreacion', DateTime, nullable=False),
+    Column('idTipoProgramacion', Integer, ForeignKey('tipo_programacion.id')),
 )

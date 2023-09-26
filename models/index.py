@@ -16,5 +16,6 @@ from models.departamentos import departamentos
 from models.estadoprogramacion import estado_programacion
 from models.tipoarchivo import tipo_archivo
 from models.archivoprogramacion import archivo_programacion
+from models.tipoprogramacion import tipo_programacion
 
 meta.create_all(engine)

@@ -65,7 +65,6 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
         print(f"Error al guardar la ruta del archivo {filename} en la base de datos. Detalle del error: {str(e)}")
         return 0  # Retorna 0 o algún otro valor para indicar que hubo un error.
 
-
 @strawberry.mutation
 async def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int, codProgramacion:str, info: Info) -> int:
     archivoprogramacion =  {
@@ -76,6 +75,7 @@ async def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int,
     result = conn.execute(archivo_programacion.insert(),archivoprogramacion)
     conn.commit();
     return int(result.inserted_primary_key[0])
+
 @strawberry.mutation
 def actualizar_archivo_programacion(self, id:int, PathArchivo: str, idTipoArchivo: int, codProgramacion: str, info: Info) -> str:
     result = conn.execute(archivo_programacion.update().where(archivo_programacion.c.id == id), {
