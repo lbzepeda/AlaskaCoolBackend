@@ -294,6 +294,7 @@ class Programacion:
     idEstado: Optional[int] = None
     codeGoogleCalendar: Optional[str] = None
     FechaCreacion: Optional[datetime] = None
+    idTipoProgramacion: Optional[int] = None
 
     @classmethod
     def from_row(cls, row):
@@ -325,7 +326,8 @@ async def crear_programacion(
         observaciones: Optional[str] = None,
         idDepartamento: Optional[int] = None,
         idHorarioProgramacion: Optional[int] = None,
-        idEstadoProgramacion: Optional[int] = None) -> int:
+        idEstadoProgramacion: Optional[int] = None,
+        idTipoProgramacion: Optional[int] = None) -> int:
     
     utc_now = datetime.now(pytz.utc)
     current_time_utc_6 = utc_now.astimezone(pytz.timezone('Etc/GMT+6'))
@@ -342,7 +344,8 @@ async def crear_programacion(
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
         "idHorarioProgramacion": idHorarioProgramacion,
-        "FechaCreacion": current_time_utc_6
+        "FechaCreacion": current_time_utc_6,
+        "idTipoProgramacion": idTipoProgramacion,
     }
     result = conn.execute(programacion.insert(), data_programacion)
 
@@ -431,7 +434,8 @@ def actualizar_programacion(self, id: int,
                             observaciones: Optional[str] = None,
                             idDepartamento: Optional[int] = None,
                             idEstadoProgramacion: Optional[int] = None,
-                            idUsuarioActualizador: Optional[int] = None) -> str:
+                            idUsuarioActualizador: Optional[int] = None,
+                            idTipoProgramacion: Optional[int] = None) -> str:
 
     result = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codservicio": codservicio,
@@ -446,7 +450,7 @@ def actualizar_programacion(self, id: int,
         "observaciones": observaciones,
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
-
+        "idTipoProgramacion": idTipoProgramacion,
     })
 
     usuario = get_usuario(idUsuarioActualizador)
