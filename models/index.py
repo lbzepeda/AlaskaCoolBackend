@@ -18,5 +18,6 @@ from models.tipoarchivo import tipo_archivo
 from models.archivoprogramacion import archivo_programacion
 from models.tipoprogramacion import tipo_programacion
 from models.bancos import bancos
+from models.clientes import clientes
 
 meta.create_all(engine)
