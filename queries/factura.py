@@ -5,6 +5,7 @@ from models.index import det_facturas, productos, facturas
 from strawberry.types import Info
 from typing import Optional
 from datetime import datetime
+from sqlalchemy import or_
 from .detallefactura import *
 
 @strawberry.type
@@ -128,4 +129,16 @@ def lista_factura(self) -> typing.List[Factura]:
     result = conn_sql.execute(facturas.select()).fetchall()
     return result
 
-lstFacturaQuery = [factura_por_id, lista_factura]
+@strawberry.field
+def lista_factura_por_busqueda(self, NoFactura: str) -> typing.List[Factura]:
+    query = (facturas.select()
+             .where(
+                or_(
+                    facturas.c.NoFactura.ilike(f"%{NoFactura}%")
+                )
+             ).limit(10)
+            )
+    result = conn_sql.execute(query).fetchall()
+    return result
+
+lstFacturaQuery = [factura_por_id, lista_factura, lista_factura_por_busqueda]
