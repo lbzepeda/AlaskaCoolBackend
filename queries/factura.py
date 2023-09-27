@@ -142,8 +142,8 @@ def lista_factura_por_busqueda(self, NoFactura: Optional[str] = None) -> typing.
                 )
     else:
         query = (facturas.select()
-                 .order_by(desc(facturas.c.NoFactura))  # Ordenar de mayor a menor
-                 .limit(10)  # Limitar a los últimos 10 registros
+                 .order_by(desc(facturas.c.NoFactura))
+                 .limit(10)
                 )
 
     result = conn_sql.execute(query).fetchall()
