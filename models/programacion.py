@@ -21,4 +21,5 @@ programacion = Table('programacion', meta,
     Column('CodeGoogleCalendar', Text, nullable=True),
     Column('FechaCreacion', DateTime, nullable=False),
     Column('idTipoProgramacion', Integer, ForeignKey('tipo_programacion.id')),
+    Column('nombrecliente', String(500), nullable=True),
 )

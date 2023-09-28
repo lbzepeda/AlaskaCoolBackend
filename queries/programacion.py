@@ -87,6 +87,7 @@ class Programacion:
     codeGoogleCalendar: Optional[str]
     FechaCreacion: Optional[datetime] = None
     idTipoProgramacion: int
+    nombrecliente: str
     @classmethod
     def from_row(cls, row):
         return cls(**row)

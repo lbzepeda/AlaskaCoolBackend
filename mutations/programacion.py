@@ -327,7 +327,8 @@ async def crear_programacion(
         idDepartamento: Optional[int] = None,
         idHorarioProgramacion: Optional[int] = None,
         idEstadoProgramacion: Optional[int] = None,
-        idTipoProgramacion: Optional[int] = None) -> int:
+        idTipoProgramacion: Optional[int] = None,
+        nombrecliente: Optional[str] = None) -> int:
     
     utc_now = datetime.now(pytz.utc)
     current_time_utc_6 = utc_now.astimezone(pytz.timezone('Etc/GMT+6'))
@@ -346,6 +347,7 @@ async def crear_programacion(
         "idHorarioProgramacion": idHorarioProgramacion,
         "FechaCreacion": current_time_utc_6,
         "idTipoProgramacion": idTipoProgramacion,
+        "nombrecliente": nombrecliente,
     }
     result = conn.execute(programacion.insert(), data_programacion)
 
@@ -435,7 +437,8 @@ def actualizar_programacion(self, id: int,
                             idDepartamento: Optional[int] = None,
                             idEstadoProgramacion: Optional[int] = None,
                             idUsuarioActualizador: Optional[int] = None,
-                            idTipoProgramacion: Optional[int] = None) -> str:
+                            idTipoProgramacion: Optional[int] = None,
+                            nombrecliente: Optional[str] = None) -> str:
 
     result = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codservicio": codservicio,
@@ -451,6 +454,7 @@ def actualizar_programacion(self, id: int,
         "idDepartamento": idDepartamento,
         "idEstadoProgramacion": idEstadoProgramacion,
         "idTipoProgramacion": idTipoProgramacion,
+        "nombrecliente": nombrecliente,
     })
 
     usuario = get_usuario(idUsuarioActualizador)
