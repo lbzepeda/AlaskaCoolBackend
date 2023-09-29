@@ -502,34 +502,35 @@ def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
     return str(resultUpd.rowcount) + " Row(s) updated"
 
 def generate_and_send_notification(data_programacion, id_value, conn):
-    # Obteniendo los datos necesarios desde data_programacion
+    base_url = "https://alaska-cool-programacion.vercel.app/registerprograming"
+    full_url = f"{base_url}/{id_value}"
+
     idUsuarioCreacion = data_programacion.get("idUsuarioCreacion")
     codservicio = data_programacion.get("codservicio")
     idTipoProgramacion = data_programacion.get("idTipoProgramacion")
     codfactura = data_programacion.get("codfactura")
     codproforma = data_programacion.get("codproforma")
     
-    # Buscando usuario y servicio en la base de datos
     usuario_row = conn.execute(usuarios.select().where(
         usuarios.c.id == idUsuarioCreacion)).fetchone()
-    servicio_row = conn.execute(productos.select().where(
-        productos.c.CodProducto == codservicio)).fetchone()
-
-    # Creando objetos usuario y servicio desde las filas
     usuario = Usuario.from_row(usuario_row)
-    servicio = Productos.from_row(servicio_row)
 
-    ref_value = codfactura if codfactura else codproforma
-    
-    # Generando la URL y el texto
-    base_url = "https://alaska-cool-programacion.vercel.app/registerprograming"
-    full_url = f"{base_url}/{id_value}"
     tipo_programacion_str = tipo_programacion_map.get(
         TipoProgramacion(idTipoProgramacion), "Desconocido")
 
-    text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Tipo de Programación: *{tipo_programacion_str}*. Registro pendiente de asignación de horario y cuadrilla. URL: {full_url}"
+    ref_value = codfactura if codfactura else codproforma
+
+    text = f"El usuario *{usuario.nombre}* creó una nueva programación. Tipo de Programación: *{tipo_programacion_str}*"
     
-    # Enviando el mensaje
+    if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Operaciones_Tecnicas:
+        servicio_row = conn.execute(productos.select().where(
+            productos.c.CodProducto == codservicio)).fetchone()
+        servicio = Productos.from_row(servicio_row)
+        text += f", para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla."
+
+    if TipoProgramacion(idTipoProgramacion) != TipoProgramacion.Retiro_Cheque:
+        text += f" URL: {full_url}"
+        
     send_message(text)
 
 lstProgramacionMutation = [crear_programacion,
