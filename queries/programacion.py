@@ -87,7 +87,7 @@ class Programacion:
     codeGoogleCalendar: Optional[str]
     FechaCreacion: Optional[datetime] = None
     idTipoProgramacion: int
-    nombrecliente: str
+    nombrecliente: Optional[str]
     facturascheque: Optional[str]
     @classmethod
     def from_row(cls, row):

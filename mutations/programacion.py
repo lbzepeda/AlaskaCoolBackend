@@ -528,7 +528,7 @@ def generate_and_send_notification(data_programacion, id_value, conn):
         servicio = Productos.from_row(servicio_row)
         text += f", para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla."
 
-    if TipoProgramacion(idTipoProgramacion) != TipoProgramacion.Retiro_Cheque:
+    if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Retiro_Cheque:
         text += f" URL: {full_url}"
         
     send_message(text)
