@@ -316,7 +316,7 @@ class HorarioProgramacion:
 @strawberry.mutation
 async def crear_programacion(
         self,
-        codservicio: str,
+        codservicio: Optional[str],
         idUsuarioCreacion: Optional[int],
         UrlGeoLocalizacion: str,
         info: Info,
@@ -426,7 +426,7 @@ def eliminar_programacion(self, id: int, idUsuarioActualizador: Optional[int] = 
 
 @strawberry.mutation
 def actualizar_programacion(self, id: int,
-                            codservicio: str,
+                            codservicio: Optional[str],
                             # idUsuarioCreacion: Optional[int],
                             UrlGeoLocalizacion: str,
                             info: Info,
