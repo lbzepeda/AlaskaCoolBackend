@@ -22,4 +22,5 @@ programacion = Table('programacion', meta,
     Column('FechaCreacion', DateTime, nullable=False),
     Column('idTipoProgramacion', Integer, ForeignKey('tipo_programacion.id')),
     Column('nombrecliente', String(500), nullable=True),
+    Column('facturascheque', String(500), nullable=True),
 )

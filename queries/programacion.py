@@ -88,6 +88,7 @@ class Programacion:
     FechaCreacion: Optional[datetime] = None
     idTipoProgramacion: int
     nombrecliente: str
+    facturascheque: Optional[str]
     @classmethod
     def from_row(cls, row):
         return cls(**row)

@@ -295,6 +295,7 @@ class Programacion:
     codeGoogleCalendar: Optional[str] = None
     FechaCreacion: Optional[datetime] = None
     idTipoProgramacion: Optional[int] = None
+    facturascheque: Optional[str] = None
 
     @classmethod
     def from_row(cls, row):
@@ -328,7 +329,8 @@ async def crear_programacion(
         idHorarioProgramacion: Optional[int] = None,
         idEstadoProgramacion: Optional[int] = None,
         idTipoProgramacion: Optional[int] = None,
-        nombrecliente: Optional[str] = None) -> int:
+        nombrecliente: Optional[str] = None,
+        facturascheque: Optional[str] = None) -> int:
     
     utc_now = datetime.now(pytz.utc)
     current_time_utc_6 = utc_now.astimezone(pytz.timezone('Etc/GMT+6'))
@@ -348,6 +350,7 @@ async def crear_programacion(
         "FechaCreacion": current_time_utc_6,
         "idTipoProgramacion": idTipoProgramacion,
         "nombrecliente": nombrecliente,
+        "facturascheque": facturascheque
     }
     result = conn.execute(programacion.insert(), data_programacion)
 
@@ -438,7 +441,8 @@ def actualizar_programacion(self, id: int,
                             idEstadoProgramacion: Optional[int] = None,
                             idUsuarioActualizador: Optional[int] = None,
                             idTipoProgramacion: Optional[int] = None,
-                            nombrecliente: Optional[str] = None) -> str:
+                            nombrecliente: Optional[str] = None,
+                            facturascheque: Optional[str] = None) -> str:
 
     result = conn.execute(programacion.update().where(programacion.c.id == id), {
         "codservicio": codservicio,
@@ -455,6 +459,7 @@ def actualizar_programacion(self, id: int,
         "idEstadoProgramacion": idEstadoProgramacion,
         "idTipoProgramacion": idTipoProgramacion,
         "nombrecliente": nombrecliente,
+        "facturascheque": facturascheque,
     })
 
     usuario = get_usuario(idUsuarioActualizador)
