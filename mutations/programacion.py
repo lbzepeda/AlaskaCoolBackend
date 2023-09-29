@@ -24,6 +24,20 @@ class TipoUsuario(Enum):
     Vendedor = 4
     SupervisorTecnico = 5
 
+class TipoProgramacion(Enum):
+    Operaciones_Tecnicas = 1
+    Retiro_Cheque = 2
+    Deposito_Bancario = 3
+    Entrega_Equipo = 4
+    Retiro_Retencion = 5
+
+tipo_programacion_map = {
+    TipoProgramacion.Operaciones_Tecnicas: "Operaciones Técnicas",
+    TipoProgramacion.Retiro_Cheque: "Retiro de Cheque",
+    TipoProgramacion.Deposito_Bancario: "Depósito Bancario",
+    TipoProgramacion.Entrega_Equipo: "Entrega de Equipo",
+    TipoProgramacion.Retiro_Retencion: "Retiro de Retención"
+}
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
@@ -354,21 +368,9 @@ async def crear_programacion(
     }
     result = conn.execute(programacion.insert(), data_programacion)
 
-    usuario_row = conn.execute(usuarios.select().where(
-        usuarios.c.id == idUsuarioCreacion)).fetchone()
-    servicio_row = conn.execute(productos.select().where(
-        productos.c.CodProducto == codservicio)).fetchone()
-
-    servicio = Productos.from_row(servicio_row)
-    usuario = Usuario.from_row(usuario_row)
-
-    ref_value = codfactura if codfactura else codproforma
     id_value = result.inserted_primary_key[0]
-    text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id_value}"
+    generate_and_send_notification(data_programacion, id_value, conn)
 
-    print(f"texto {text}")
-    # if idUsuarioCreacion != 1:
-    send_message(text)
     conn.commit()
     return int(result.inserted_primary_key[0])
 
@@ -499,6 +501,36 @@ def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
     conn.commit()
     return str(resultUpd.rowcount) + " Row(s) updated"
 
+def generate_and_send_notification(data_programacion, id_value, conn):
+    # Obteniendo los datos necesarios desde data_programacion
+    idUsuarioCreacion = data_programacion.get("idUsuarioCreacion")
+    codservicio = data_programacion.get("codservicio")
+    idTipoProgramacion = data_programacion.get("idTipoProgramacion")
+    codfactura = data_programacion.get("codfactura")
+    codproforma = data_programacion.get("codproforma")
+    
+    # Buscando usuario y servicio en la base de datos
+    usuario_row = conn.execute(usuarios.select().where(
+        usuarios.c.id == idUsuarioCreacion)).fetchone()
+    servicio_row = conn.execute(productos.select().where(
+        productos.c.CodProducto == codservicio)).fetchone()
+
+    # Creando objetos usuario y servicio desde las filas
+    usuario = Usuario.from_row(usuario_row)
+    servicio = Productos.from_row(servicio_row)
+
+    ref_value = codfactura if codfactura else codproforma
+    
+    # Generando la URL y el texto
+    base_url = "https://alaska-cool-programacion.vercel.app/registerprograming"
+    full_url = f"{base_url}/{id_value}"
+    tipo_programacion_str = tipo_programacion_map.get(
+        TipoProgramacion(idTipoProgramacion), "Desconocido")
+
+    text = f"El usuario *{usuario.nombre}* creó una nueva programación para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Tipo de Programación: *{tipo_programacion_str}*. Registro pendiente de asignación de horario y cuadrilla. URL: {full_url}"
+    
+    # Enviando el mensaje
+    send_message(text)
 
 lstProgramacionMutation = [crear_programacion,
                            actualizar_programacion, eliminar_programacion, cerrar_programacion]
