@@ -526,19 +526,18 @@ def generate_and_send_notification(data_programacion, id_value, conn, estado, id
     
     if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Operaciones_Tecnicas:
 
-        usuario = get_usuario(idUsuarioActualizador)
         servicio = get_servicio(codservicio)
         referencia = get_referencia(codfactura, codproforma)
         proformaobj, facturaobj = get_proforma_or_factura(referencia)
 
-        horario_row = conn.execute(horario_programacion.select().where(
+        if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
+            horario_row = conn.execute(horario_programacion.select().where(
             horario_programacion.c.id == data_programacion.get("idHorarioProgramacion"))).fetchone()
         
-        servicio_row = conn.execute(productos.select().where(
-            productos.c.CodProducto == codservicio)).fetchone()
-        servicio = Productos.from_row(servicio_row)
+            servicio_row = conn.execute(productos.select().where(
+                productos.c.CodProducto == codservicio)).fetchone()
+            servicio = Productos.from_row(servicio_row)
 
-        if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
             update_google_calendar_event(id, horario_row, servicio, facturaobj,
                                         proformaobj, data_programacion.get("direccion"), data_programacion.get("UrlGeoLocalizacion"), 
                                         data_programacion.get("observaciones"), referencia)
