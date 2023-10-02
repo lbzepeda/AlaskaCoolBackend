@@ -481,6 +481,20 @@ def actualizar_programacion(self, id: int,
         "facturascheque": facturascheque,
     }
 
+    if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Operaciones_Tecnicas:
+        usuario = get_usuario(idUsuarioActualizador)
+        servicio = get_servicio(codservicio)
+        referencia = get_referencia(codfactura, codproforma)
+        proformaobj, facturaobj = get_proforma_or_factura(referencia)
+
+        horario_row = conn.execute(horario_programacion.select().where(
+            horario_programacion.c.id == idHorarioProgramacion)).fetchone()
+
+        if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
+            update_google_calendar_event(id, horario_row, servicio, facturaobj,
+                                        proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
+
+
     generate_and_send_notification(data_programacion, id, conn, 2, idUsuarioActualizador)
 
     conn.commit()
