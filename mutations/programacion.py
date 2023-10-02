@@ -531,6 +531,9 @@ def generate_and_send_notification(data_programacion, id_value, conn):
     if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Retiro_Cheque:
         text += f" URL: {full_url}"
         
+    if idUsuarioCreacion == 1:
+        return
+
     send_message(text)
 
 lstProgramacionMutation = [crear_programacion,
