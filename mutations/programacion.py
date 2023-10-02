@@ -309,6 +309,7 @@ class Programacion:
     codeGoogleCalendar: Optional[str] = None
     FechaCreacion: Optional[datetime] = None
     idTipoProgramacion: Optional[int] = None
+    nombrecliente: Optional[str] = None
     facturascheque: Optional[str] = None
 
     @classmethod
