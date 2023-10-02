@@ -369,7 +369,7 @@ async def crear_programacion(
     result = conn.execute(programacion.insert(), data_programacion)
 
     id_value = result.inserted_primary_key[0]
-    generate_and_send_notification(data_programacion, id_value, conn)
+    generate_and_send_notification(data_programacion, id_value, conn, 1, 0)
 
     conn.commit()
     return int(result.inserted_primary_key[0])
@@ -464,22 +464,24 @@ def actualizar_programacion(self, id: int,
         "facturascheque": facturascheque,
     })
 
-    usuario = get_usuario(idUsuarioActualizador)
-    servicio = get_servicio(codservicio)
-    referencia = get_referencia(codfactura, codproforma)
-    proformaobj, facturaobj = get_proforma_or_factura(referencia)
+    data_programacion = {
+        "codservicio": codservicio,
+        "UrlGeoLocalizacion": UrlGeoLocalizacion,
+        "codcliente": codcliente,
+        "codfactura": codfactura,
+        "codproforma": codproforma,
+        "idCuadrilla": idCuadrilla,
+        "idHorarioProgramacion": idHorarioProgramacion,
+        "direccion": direccion,
+        "observaciones": observaciones,
+        "idDepartamento": idDepartamento,
+        "idEstadoProgramacion": idEstadoProgramacion,
+        "idTipoProgramacion": idTipoProgramacion,
+        "nombrecliente": nombrecliente,
+        "facturascheque": facturascheque,
+    }
 
-    horario_row = conn.execute(horario_programacion.select().where(
-        horario_programacion.c.id == idHorarioProgramacion)).fetchone()
-
-    if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
-        update_google_calendar_event(id, horario_row, servicio, facturaobj,
-                                     proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
-
-    ref_value = get_referencia(codfactura, referencia)
-    text = f"El usuario *{usuario.nombre}* actualizo programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
-
-    notify_update(idUsuarioActualizador, text)
+    generate_and_send_notification(data_programacion, id, conn, 2, idUsuarioActualizador)
 
     conn.commit()
     return str(result.rowcount) + " Row(s) updated"
@@ -501,11 +503,11 @@ def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
     conn.commit()
     return str(resultUpd.rowcount) + " Row(s) updated"
 
-def generate_and_send_notification(data_programacion, id_value, conn):
+def generate_and_send_notification(data_programacion, id_value, conn, estado, idUsuarioActualizador):
     base_url = "https://alaska-cool-programacion.vercel.app/registerprograming"
     full_url = f"{base_url}/{id_value}"
 
-    idUsuarioCreacion = data_programacion.get("idUsuarioCreacion")
+    idUsuarioCreacion = data_programacion.get("idUsuarioCreacion") if estado == 1 else idUsuarioActualizador
     codservicio = data_programacion.get("codservicio")
     idTipoProgramacion = data_programacion.get("idTipoProgramacion")
     codfactura = data_programacion.get("codfactura")
@@ -518,11 +520,11 @@ def generate_and_send_notification(data_programacion, id_value, conn):
     tipo_programacion_str = tipo_programacion_map.get(
         TipoProgramacion(idTipoProgramacion), "Desconocido")
 
-    ref_value = codfactura if codfactura else codproforma
-
-    text = f"El usuario *{usuario.nombre}* creó una nueva programación. Tipo de Programación: *{tipo_programacion_str}*"
+    accion = "creó" if estado == 1 else "actualizó"
+    text = f"El usuario *{usuario.nombre}* {accion} una nueva programación. Tipo de Programación: *{tipo_programacion_str}*"
     
     if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Operaciones_Tecnicas:
+        ref_value = codfactura if codfactura else codproforma
         servicio_row = conn.execute(productos.select().where(
             productos.c.CodProducto == codservicio)).fetchone()
         servicio = Productos.from_row(servicio_row)
