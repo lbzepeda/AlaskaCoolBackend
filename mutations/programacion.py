@@ -538,7 +538,7 @@ def generate_and_send_notification(data_programacion, id_value, conn, estado, id
                 productos.c.CodProducto == codservicio)).fetchone()
             servicio = Productos.from_row(servicio_row)
 
-            update_google_calendar_event(id, horario_row, servicio, facturaobj,
+            update_google_calendar_event(id_value, horario_row, servicio, facturaobj,
                                         proformaobj, data_programacion.get("direccion"), data_programacion.get("UrlGeoLocalizacion"), 
                                         data_programacion.get("observaciones"), referencia)
         
