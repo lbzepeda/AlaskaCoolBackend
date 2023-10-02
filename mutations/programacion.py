@@ -481,20 +481,6 @@ def actualizar_programacion(self, id: int,
         "facturascheque": facturascheque,
     }
 
-    if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Operaciones_Tecnicas:
-        usuario = get_usuario(idUsuarioActualizador)
-        servicio = get_servicio(codservicio)
-        referencia = get_referencia(codfactura, codproforma)
-        proformaobj, facturaobj = get_proforma_or_factura(referencia)
-
-        horario_row = conn.execute(horario_programacion.select().where(
-            horario_programacion.c.id == idHorarioProgramacion)).fetchone()
-
-        if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
-            update_google_calendar_event(id, horario_row, servicio, facturaobj,
-                                        proformaobj, direccion, UrlGeoLocalizacion, observaciones, referencia)
-
-
     generate_and_send_notification(data_programacion, id, conn, 2, idUsuarioActualizador)
 
     conn.commit()
@@ -538,11 +524,25 @@ def generate_and_send_notification(data_programacion, id_value, conn, estado, id
     text = f"El usuario *{usuario.nombre}* {accion} una nueva programación. Tipo de Programación: *{tipo_programacion_str}*"
     
     if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Operaciones_Tecnicas:
-        ref_value = codfactura if codfactura else codproforma
+
+        usuario = get_usuario(idUsuarioActualizador)
+        servicio = get_servicio(codservicio)
+        referencia = get_referencia(codfactura, codproforma)
+        proformaobj, facturaobj = get_proforma_or_factura(referencia)
+
+        horario_row = conn.execute(horario_programacion.select().where(
+            horario_programacion.c.id == data_programacion.get("idHorarioProgramacion"))).fetchone()
+        
         servicio_row = conn.execute(productos.select().where(
             productos.c.CodProducto == codservicio)).fetchone()
         servicio = Productos.from_row(servicio_row)
-        text += f", para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: {full_url}"
+
+        if usuario.idTipoUsuario == TipoUsuario.SupervisorTecnico.value:
+            update_google_calendar_event(id, horario_row, servicio, facturaobj,
+                                        proformaobj, data_programacion.get("direccion"), data_programacion.get("UrlGeoLocalizacion"), 
+                                        data_programacion.get("observaciones"), referencia)
+        
+        text += f", para el servicio *{servicio.descripcion}*, Ref: *{referencia}*. Registro pendiente de asignación de horario y cuadrilla. URL: {full_url}"
 
     if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Retiro_Cheque:
         text += f" URL: {full_url}"
