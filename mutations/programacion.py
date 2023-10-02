@@ -526,7 +526,7 @@ def generate_and_send_notification(data_programacion, id_value, conn):
         servicio_row = conn.execute(productos.select().where(
             productos.c.CodProducto == codservicio)).fetchone()
         servicio = Productos.from_row(servicio_row)
-        text += f", para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla."
+        text += f", para el servicio *{servicio.descripcion}*, Ref: *{ref_value}*. Registro pendiente de asignación de horario y cuadrilla. URL: {full_url}"
 
     if TipoProgramacion(idTipoProgramacion) == TipoProgramacion.Retiro_Cheque:
         text += f" URL: {full_url}"
