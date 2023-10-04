@@ -1,5 +1,5 @@
 import strawberry
-from conn.db import conn
+from conn.db import conn, handle_db_transaction
 from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion
 from strawberry.types import Info
 from datetime import datetime
@@ -329,6 +329,7 @@ class HorarioProgramacion:
         return cls(**row._asdict())
 
 @strawberry.mutation
+@handle_db_transaction
 async def crear_programacion(
         self,
         codservicio: Optional[str],
@@ -407,6 +408,7 @@ def notify_update(idUsuarioActualizador, text):
     send_message(text)
 
 @strawberry.mutation
+@handle_db_transaction
 def eliminar_programacion(self, id: int, idUsuarioActualizador: Optional[int] = None) -> str:
     
     event_row = conn.execute(programacion.select().where(
@@ -428,6 +430,7 @@ def eliminar_programacion(self, id: int, idUsuarioActualizador: Optional[int] = 
     return str(resultUpd.rowcount) + " Row(s) updated"
 
 @strawberry.mutation
+@handle_db_transaction
 def actualizar_programacion(self, id: int,
                             codservicio: Optional[str],
                             # idUsuarioCreacion: Optional[int],
@@ -488,6 +491,7 @@ def actualizar_programacion(self, id: int,
     return str(result.rowcount) + " Row(s) updated"
 
 @strawberry.mutation
+@handle_db_transaction
 def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
     programacion_row = conn.execute(programacion.select().where(
         programacion.c.id == id)).fetchone()

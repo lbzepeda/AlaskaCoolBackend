@@ -6,7 +6,7 @@ import strawberry
 from strawberry.file_uploads import Upload
 from strawberry.types import Info
 
-from conn.db import conn
+from conn.db import conn, handle_db_transaction
 from models.index import archivo_programacion
 
 GCP_CREDENTIALS = os.environ.get('GCP_CREDENTIALS')
@@ -26,6 +26,7 @@ def generate_signed_url(blob: storage.Blob, expiration_time: timedelta = timedel
     return blob.generate_signed_url(expiration=expiration_time, method='GET')
 
 @strawberry.mutation
+@handle_db_transaction
 async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, codProgramacion: str) -> int:
     # **Imprimir información de upload**
     print(f"Nombre del archivo: {upload.filename}")
@@ -66,6 +67,7 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
         return 0  # Retorna 0 o algún otro valor para indicar que hubo un error.
 
 @strawberry.mutation
+@handle_db_transaction
 async def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int, codProgramacion:str, info: Info) -> int:
     archivoprogramacion =  {
         "PathArchivo": PathArchivo,
@@ -73,10 +75,11 @@ async def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int,
         "codProgramacion": codProgramacion
     }
     result = conn.execute(archivo_programacion.insert(),archivoprogramacion)
-    conn.commit();
+    conn.commit()
     return int(result.inserted_primary_key[0])
 
 @strawberry.mutation
+@handle_db_transaction
 def actualizar_archivo_programacion(self, id:int, PathArchivo: str, idTipoArchivo: int, codProgramacion: str, info: Info) -> str:
     result = conn.execute(archivo_programacion.update().where(archivo_programacion.c.id == id), {
         "PathArchivo": PathArchivo,
@@ -84,7 +87,7 @@ def actualizar_archivo_programacion(self, id:int, PathArchivo: str, idTipoArchiv
         "codProgramacion": codProgramacion
     })
     print(result. returns_rows)
-    conn.commit();
+    conn.commit()
     return str(result.rowcount) + " Row(s) updated"
 
 lstArchivoProgramacionMutation = [crear_archivo_programacion, actualizar_archivo_programacion, cargar_archivo_programacion]

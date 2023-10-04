@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn, handle_db_transaction
 from models.index import usuarios
 from models.index import estados
 from models.index import tipo_usuario
@@ -9,6 +9,7 @@ from typing import Optional
 
 
 @strawberry.mutation
+@handle_db_transaction
 async def crear_usuario(self, nombre: str, correo: str, idTipoUsuario: int, info: Info) -> int:
     usuario =  {
         "nombre": nombre,
@@ -16,9 +17,11 @@ async def crear_usuario(self, nombre: str, correo: str, idTipoUsuario: int, info
         "idTipoUsuario": idTipoUsuario,
     }
     result = conn.execute(usuarios.insert(),usuario)
-    conn.commit();
+    conn.commit()
     return int(result.inserted_primary_key[0])
+
 @strawberry.mutation
+@handle_db_transaction
 def actualizar_usuario(self, id:int, nombre: str, correo: str, idEstado: int, idTipoUsuario: int,info: Info) -> str:
     result = conn.execute(usuarios.update().where(usuarios.c.id == id), {
         "nombre": nombre,
@@ -27,7 +30,7 @@ def actualizar_usuario(self, id:int, nombre: str, correo: str, idEstado: int, id
         "idTipoUsuario": idTipoUsuario,
     })
     print(result. returns_rows)
-    conn.commit();
+    conn.commit()
     return str(result.rowcount) + " Row(s) updated"
 
 lstUsuarioMutation = [crear_usuario, actualizar_usuario]

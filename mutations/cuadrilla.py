@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn, handle_db_transaction
 from models.index import cuadrillas
 from strawberry.types import Info
 
@@ -22,6 +22,7 @@ class Query:
 
 
 @strawberry.mutation
+@handle_db_transaction
 async def crear_cuadrilla(self, nombre: str, descripcion: str, info: Info) -> int:
     tipousuario = {
         "nombre": nombre,
@@ -33,6 +34,7 @@ async def crear_cuadrilla(self, nombre: str, descripcion: str, info: Info) -> in
 
 
 @strawberry.mutation
+@handle_db_transaction
 def actualizar_cuadrilla(self, id: int, nombre: str, descripcion: str, info: Info) -> str:
     result = conn.execute(cuadrillas.update().where(cuadrillas.c.id == id), {
         "nombre": nombre,

@@ -1,6 +1,7 @@
 import os
 from sqlalchemy import create_engine, MetaData
 from dotenv import load_dotenv
+from functools import wraps
 
 # Cargar variables de entorno
 load_dotenv()
@@ -49,3 +50,16 @@ engine = create_engine(
 
 meta = MetaData()
 conn = engine.connect()
+
+def handle_db_transaction(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            result = await func(*args, **kwargs)
+            conn.commit()
+            return result
+        except Exception as e:
+            conn.rollback()
+            print(f"Error en la transacción: {str(e)}")
+            return 0  # Puedes devolver cualquier cosa para indicar un fallo
+    return wrapper
