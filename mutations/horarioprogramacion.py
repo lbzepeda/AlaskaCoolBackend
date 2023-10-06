@@ -14,7 +14,7 @@ class HorarioProgramacion:
 
 @strawberry.mutation
 @handle_db_transaction
-async def crear_horario_programacion(self, fechainicio: datetime, fechafin: datetime, horainicio: time, horafin: time, info: Info) -> int:
+def crear_horario_programacion(self, fechainicio: datetime, fechafin: datetime, horainicio: time, horafin: time, info: Info) -> int:
     tipousuario =  {
         "fechainicio": fechainicio,
         "fechafin": fechafin,

@@ -9,7 +9,7 @@ from typing import Optional
 
 @strawberry.mutation
 @handle_db_transaction
-async def create_usuario_cuadrilla(self, idUsuario: int, idCuadrilla: int, info: Info) -> int:
+def create_usuario_cuadrilla(self, idUsuario: int, idCuadrilla: int, info: Info) -> int:
     tipousuario =  {
         "idUsuario": idUsuario,
         "idCuadrilla": idCuadrilla
