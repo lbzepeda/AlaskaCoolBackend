@@ -23,7 +23,7 @@ class Query:
 
 @strawberry.mutation
 @handle_db_transaction
-def crear_cuadrilla(self, nombre: str, descripcion: str, info: Info) -> int:
+async def crear_cuadrilla(self, nombre: str, descripcion: str, info: Info) -> int:
     tipousuario = {
         "nombre": nombre,
         "descripcion": descripcion

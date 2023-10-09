@@ -68,7 +68,7 @@ async def cargar_archivo_programacion(self, upload: Upload, idTipoArchivo: int, 
 
 @strawberry.mutation
 @handle_db_transaction
-def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int, codProgramacion:str, info: Info) -> int:
+async def crear_archivo_programacion(self, PathArchivo: str, idTipoArchivo: int, codProgramacion:str, info: Info) -> int:
     archivoprogramacion =  {
         "PathArchivo": PathArchivo,
         "idTipoArchivo": idTipoArchivo,

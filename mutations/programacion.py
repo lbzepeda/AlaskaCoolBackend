@@ -330,7 +330,7 @@ class HorarioProgramacion:
 
 @strawberry.mutation
 @handle_db_transaction
-def crear_programacion(
+async def crear_programacion(
         self,
         codservicio: Optional[str],
         idUsuarioCreacion: Optional[int],

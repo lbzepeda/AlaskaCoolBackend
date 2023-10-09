@@ -11,7 +11,7 @@ class TipoUsuario:
 
 @strawberry.mutation
 @handle_db_transaction
-def crear_tipo_usuario(self, nombre: str, descripcion: str, info: Info) -> int:
+async def crear_tipo_usuario(self, nombre: str, descripcion: str, info: Info) -> int:
     tipousuario =  {
         "nombre": nombre,
         "descripcion": descripcion

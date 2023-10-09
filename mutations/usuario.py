@@ -10,7 +10,7 @@ from typing import Optional
 
 @strawberry.mutation
 @handle_db_transaction
-def crear_usuario(self, nombre: str, correo: str, idTipoUsuario: int, info: Info) -> int:
+async def crear_usuario(self, nombre: str, correo: str, idTipoUsuario: int, info: Info) -> int:
     usuario =  {
         "nombre": nombre,
         "correo": correo,
