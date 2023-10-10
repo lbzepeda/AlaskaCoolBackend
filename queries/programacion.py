@@ -1,7 +1,7 @@
 import typing
 import strawberry
 from conn.db import conn
-from models.index import programacion, productos, proforma, usuarios, usuario_cuadrilla, facturas, horario_programacion, departamentos, estado_programacion, archivo_programacion
+from models.index import programacion, productos, proforma, usuarios, usuario_cuadrilla, facturas, horario_programacion, departamentos, estado_programacion, archivo_programacion, tipo_programacion
 from strawberry.types import Info
 from typing import Optional
 from sqlalchemy import and_
@@ -17,11 +17,13 @@ from .departamentos import Departamentos
 from .estadoprogramacion import EstadoProgramacion
 from .usuario import Usuario
 from .archivoprogramacion import ArchivoProgramacion
+from .tipoprogramacion import TipoProgramacion
 
 lstProductos = conn.execute(productos.select()).fetchall()
 lstUsuarios = conn.execute(usuarios.select()).fetchall()
 lstDepartamentos = conn.execute(departamentos.select()).fetchall()
 lstEstadoProgramacion = conn.execute(estado_programacion.select()).fetchall()
+lstTipoProgramacion = conn.execute(tipo_programacion.select()).fetchall()
 
 @strawberry.type
 class Programacion:
@@ -87,6 +89,10 @@ class Programacion:
     codeGoogleCalendar: Optional[str]
     FechaCreacion: Optional[datetime] = None
     idTipoProgramacion: int
+    @strawberry.field
+    def tipo_programacion(self, info: Info) -> Optional[TipoProgramacion]:  
+        tipoprogramacion = [TipoProgramacion(**dict(tipoprogramacion._mapping)) for tipoprogramacion in lstTipoProgramacion if tipoprogramacion and tipoprogramacion.id == self.idTipoProgramacion]
+        return tipoprogramacion[0] if tipoprogramacion else None
     nombrecliente: Optional[str] = None
     facturascheque: Optional[str] = None
     @classmethod
