@@ -112,6 +112,7 @@ def lista_programacion(
     fechaInicio: Optional[datetime] = None,
     fechaFin: Optional[datetime] = None,
     codServicio: Optional[str] = None,
+    idTipoProgramacion: Optional[int] = None,
 ) -> typing.List[Programacion]:
 
     offset = (page - 1) * perPage
@@ -123,6 +124,9 @@ def lista_programacion(
     if codServicio:
         query = query.where(programacion.c.codservicio == codServicio)
 
+    if idTipoProgramacion:
+        query = query.where(programacion.c.idTipoProgramacion == idTipoProgramacion)
+
     query = query.limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
     
@@ -132,7 +136,8 @@ def lista_programacion(
 def cantidad_programacion(
     fechaInicio: Optional[datetime] = None,
     fechaFin: Optional[datetime] = None,
-    codServicio: Optional[str] = None
+    codServicio: Optional[str] = None,
+    idTipoProgramacion: Optional[int] = None,
 ) -> Optional[int]:
 
     query = programacion.select().where(programacion.c.idEstado == 1)
@@ -141,6 +146,9 @@ def cantidad_programacion(
     
     if codServicio:
         query = query.where(programacion.c.codservicio == codServicio)
+
+    if idTipoProgramacion:
+        query = query.where(programacion.c.idTipoProgramacion == idTipoProgramacion)
         
     result = conn.execute(query).fetchall()
     
@@ -154,6 +162,7 @@ def lista_programacion_excel(
     fechaInicio: Optional[datetime] = None,
     fechaFin: Optional[datetime] = None,
     codServicio: Optional[str] = None,
+    idTipoProgramacion: Optional[int] = None,
 ) -> typing.List[Programacion]:
 
     offset = (page - 1) * perPage
@@ -164,6 +173,9 @@ def lista_programacion_excel(
     
     if codServicio:
         query = query.where(programacion.c.codservicio == codServicio)
+
+    if idTipoProgramacion:
+        query = query.where(programacion.c.idTipoProgramacion == idTipoProgramacion)
 
     query = query.limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
