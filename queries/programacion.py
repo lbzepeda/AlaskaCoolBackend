@@ -113,6 +113,7 @@ def lista_programacion(
     fechaFin: Optional[datetime] = None,
     codServicio: Optional[str] = None,
     idTipoProgramacion: Optional[int] = None,
+    idUsuarioCreacion: Optional[int] = None
 ) -> typing.List[Programacion]:
 
     offset = (page - 1) * perPage
@@ -127,6 +128,9 @@ def lista_programacion(
     if idTipoProgramacion:
         query = query.where(programacion.c.idTipoProgramacion == idTipoProgramacion)
 
+    if idUsuarioCreacion:
+        query = query.where(programacion.c.idUsuarioCreacion == idUsuarioCreacion)
+
     query = query.limit(perPage).offset(offset)
     result = conn.execute(query).fetchall()
     
@@ -138,6 +142,7 @@ def cantidad_programacion(
     fechaFin: Optional[datetime] = None,
     codServicio: Optional[str] = None,
     idTipoProgramacion: Optional[int] = None,
+    idUsuarioCreacion: Optional[int] = None
 ) -> Optional[int]:
 
     query = programacion.select().where(programacion.c.idEstado == 1)
@@ -149,6 +154,9 @@ def cantidad_programacion(
 
     if idTipoProgramacion:
         query = query.where(programacion.c.idTipoProgramacion == idTipoProgramacion)
+
+    if idUsuarioCreacion:
+        query = query.where(programacion.c.idUsuarioCreacion == idUsuarioCreacion)
         
     result = conn.execute(query).fetchall()
     
