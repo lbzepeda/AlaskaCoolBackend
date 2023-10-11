@@ -2,6 +2,7 @@ import strawberry
 from typing import Optional
 from conn.db import conn
 import typing
+import sqlalchemy
 from models.index import usuarios
 from models.index import estados
 from models.index import tipo_usuario
@@ -67,7 +68,14 @@ def lista_usuarios_tecnicos(self) -> typing.List[Usuario]:
 
 @strawberry.field
 def lista_usuarios_sistema(self) -> typing.List[Usuario]:
-    result = conn.execute(usuarios.select().where(usuarios.c.idTipoUsuario.in_([3, 4, 5, 6, 7]))).fetchall()
+    result = conn.execute(
+        usuarios.select().where(
+            sqlalchemy.and_(
+                usuarios.c.idTipoUsuario.in_([3, 4, 5, 6, 7]),
+                usuarios.c.idEstado == 1
+            )
+        )
+    ).fetchall()
     return result
 
 lstUsuarioQuery = [usuario_por_id, usuario_por_correo, lista_usuario, lista_usuarios_tecnicos, lista_usuarios_sistema]
