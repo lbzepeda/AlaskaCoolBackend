@@ -65,4 +65,9 @@ def lista_usuarios_tecnicos(self) -> typing.List[Usuario]:
     result = conn.execute(usuarios.select().where(usuarios.c.idTipoUsuario.in_([1, 2, 5]))).fetchall()
     return result
 
-lstUsuarioQuery = [usuario_por_id, usuario_por_correo, lista_usuario, lista_usuarios_tecnicos]
+@strawberry.field
+def lista_usuarios_sistema(self) -> typing.List[Usuario]:
+    result = conn.execute(usuarios.select().where(usuarios.c.idTipoUsuario.in_([3, 4, 5, 6, 7]))).fetchall()
+    return result
+
+lstUsuarioQuery = [usuario_por_id, usuario_por_correo, lista_usuario, lista_usuarios_tecnicos, lista_usuarios_sistema]
