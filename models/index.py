@@ -24,5 +24,8 @@ from models.detallerequisa import detalle_requisa
 from models.genero import genero
 from models.cargo import cargo
 from models.moneda import moneda
+from models.colaboradores import colaboradores
+from models.archivos import archivos
+from models.contratacionescolaboradores import contratacion_colaboradores
 
 meta.create_all(engine)
