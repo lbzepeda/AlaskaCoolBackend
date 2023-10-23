@@ -21,5 +21,7 @@ from models.bancos import bancos
 from models.clientes import clientes
 from models.requisa import requisa
 from models.detallerequisa import detalle_requisa
+from models.genero import genero
+from models.cargo import cargo
 
 meta.create_all(engine)
