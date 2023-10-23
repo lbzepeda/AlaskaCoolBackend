@@ -20,7 +20,9 @@ from .clientes import *
 from .cargo import *
 from .genero import *
 from .moneda import *
+from .colaboradores import *
+from .contratacioncolaboradores import *
 
 Query = create_type("Query", lstUsuarioQuery + lstCuadrillaQuery + lstDetalleFacturaQuery + lstDetalleProformaQuery + lstFacturaQuery + lstProductoQuery
                     + lstProformaQuery + lstTipoUsuarioQuery + lstUsuarioCuadrillaQuery + lstHorarioProductoQuery + lstProgramacionQuery + lstDepartamentosQuery + lstEstadoProgramacionQuery + lstTipoArchivoQuery + lstArchivoProgramacionQuery
-                    + lstTipoProgramacionQuery + lstBancoQuery + lstClienteQuery + lstCargoQuery + lstGeneroQuery + lstMonedaQuery)
+                    + lstTipoProgramacionQuery + lstBancoQuery + lstClienteQuery + lstCargoQuery + lstGeneroQuery + lstMonedaQuery + lstColaboradoresQuery + lstContratacionColaboradoresQuery)
