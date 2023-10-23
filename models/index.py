@@ -23,5 +23,6 @@ from models.requisa import requisa
 from models.detallerequisa import detalle_requisa
 from models.genero import genero
 from models.cargo import cargo
+from models.moneda import moneda
 
 meta.create_all(engine)
