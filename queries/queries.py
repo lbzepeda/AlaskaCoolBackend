@@ -17,7 +17,9 @@ from .archivoprogramacion import *
 from .tipoprogramacion import *
 from .bancos import *
 from .clientes import *
+from .cargo import *
+from .genero import *
 
 Query = create_type("Query", lstUsuarioQuery + lstCuadrillaQuery + lstDetalleFacturaQuery + lstDetalleProformaQuery + lstFacturaQuery + lstProductoQuery
                     + lstProformaQuery + lstTipoUsuarioQuery + lstUsuarioCuadrillaQuery + lstHorarioProductoQuery + lstProgramacionQuery + lstDepartamentosQuery + lstEstadoProgramacionQuery + lstTipoArchivoQuery + lstArchivoProgramacionQuery
-                    + lstTipoProgramacionQuery + lstBancoQuery + lstClienteQuery)
+                    + lstTipoProgramacionQuery + lstBancoQuery + lstClienteQuery + lstCargoQuery + lstGeneroQuery)
