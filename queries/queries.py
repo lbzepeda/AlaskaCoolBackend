@@ -22,7 +22,10 @@ from .genero import *
 from .moneda import *
 from .colaboradores import *
 from .contratacioncolaboradores import *
+from .esquemapago import *
+from .tipopago import *
+from .fechapago import *
 
 Query = create_type("Query", lstUsuarioQuery + lstCuadrillaQuery + lstDetalleFacturaQuery + lstDetalleProformaQuery + lstFacturaQuery + lstProductoQuery
                     + lstProformaQuery + lstTipoUsuarioQuery + lstUsuarioCuadrillaQuery + lstHorarioProductoQuery + lstProgramacionQuery + lstDepartamentosQuery + lstEstadoProgramacionQuery + lstTipoArchivoQuery + lstArchivoProgramacionQuery
-                    + lstTipoProgramacionQuery + lstBancoQuery + lstClienteQuery + lstCargoQuery + lstGeneroQuery + lstMonedaQuery + lstColaboradoresQuery + lstContratacionColaboradoresQuery)
+                    + lstTipoProgramacionQuery + lstBancoQuery + lstClienteQuery + lstCargoQuery + lstGeneroQuery + lstMonedaQuery + lstColaboradoresQuery + lstContratacionColaboradoresQuery + lstEsquemaPagoQuery + lstTipoPagoQuery + lstFechaPagoQuery)

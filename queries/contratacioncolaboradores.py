@@ -32,12 +32,10 @@ class ContratacionColaboradores:
     @strawberry.field
     def archivo(self, info: Info) -> typing.List[Optional[Archivos]]:  
         archivo_results = conn.execute(archivos.select().where(archivos.c.idContratacionesColaboradores == self.id)).fetchall()
-        
         if archivo_results:
             return [Archivos(**dict(archivo._mapping)) for archivo in archivo_results]
         else:
             return None
-    
     idEstado: int
 
 @strawberry.field
