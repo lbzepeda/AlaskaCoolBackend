@@ -27,5 +27,8 @@ from models.moneda import moneda
 from models.colaboradores import colaboradores
 from models.archivos import archivos
 from models.contratacionescolaboradores import contratacion_colaboradores
+from models.esquemapago import esquema_pago
+from models.tipopago import tipo_pago
+from models.fechapago import fecha_pago
 
 meta.create_all(engine)

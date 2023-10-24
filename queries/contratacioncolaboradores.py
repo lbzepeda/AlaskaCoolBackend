@@ -13,8 +13,6 @@ from .archivos import Archivos
 @strawberry.type
 class ContratacionColaboradores:
     id: int
-    SalarioBase: str
-    idSalarioMoneda: int
     @strawberry.field
     def salariomoneda(self, info: Info) -> Optional[Moneda]:
         monedaresult = conn.execute(moneda.select().where(moneda.c.id == self.idSalarioMoneda)).first()
