@@ -1,6 +1,6 @@
 import typing
 import strawberry
-from conn.db import conn
+from conn.db import conn, conn_sql
 from models.index import programacion, productos, proforma, usuarios, usuario_cuadrilla, facturas, horario_programacion, departamentos, estado_programacion, archivo_programacion, tipo_programacion
 from strawberry.types import Info
 from typing import Optional
@@ -19,7 +19,7 @@ from .usuario import Usuario
 from .archivoprogramacion import ArchivoProgramacion
 from .tipoprogramacion import TipoProgramacion
 
-lstProductos = conn.execute(productos.select()).fetchall()
+lstProductos = conn_sql.execute(productos.select()).fetchall()
 lstUsuarios = conn.execute(usuarios.select()).fetchall()
 lstDepartamentos = conn.execute(departamentos.select()).fetchall()
 lstEstadoProgramacion = conn.execute(estado_programacion.select()).fetchall()
