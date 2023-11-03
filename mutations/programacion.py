@@ -81,7 +81,7 @@ def create_google_calendar_event(horario_row, servicio, facturaobj, proformaobj,
         # Puedes personalizar este texto
         'summary': f"{cliente} - {servicio.descripcion} - Referencia: {referencia}",
         # Puedes personalizar este texto
-        'description': f"URL de Programación: https://alaska-cool-programacion.vercel.app/registerprograming/{id}\nDireccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}",
+        'description': f"URL de Programación: https://alaskacoolprogramacion-production.up.railway.app/registerprograming/{id}\nDireccion: {direccion}\nLocalización: {UrlGeoLocalizacion}\nObservaciones: {observaciones}",
         'start': {
             'dateTime': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),
             'timeZone': 'America/Managua',
@@ -423,7 +423,7 @@ def eliminar_programacion(self, id: int, idUsuarioActualizador: Optional[int] = 
         "idEstado": 2
     })
 
-    text = f"El usuario *{usuario.nombre}* ELIMINO programación con la referencia: *{ref_value}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
+    text = f"El usuario *{usuario.nombre}* ELIMINO programación con la referencia: *{ref_value}*. URL: https://alaskacoolprogramacion-production.up.railway.app/registerprograming/{id}"
     notify_update(idUsuarioActualizador, text)
 
     conn.commit()
@@ -502,14 +502,14 @@ def cerrar_programacion(self, id: int, idUsuarioActualizador: int) -> str:
         "idEstadoProgramacion": 3
     })
 
-    text = f"El usuario *{usuario.nombre}* FINALIZÓ programación con la referencia: *{get_referencia(resultProgramacion.codfactura, resultProgramacion.codproforma)}*. URL: https://alaska-cool-programacion.vercel.app/registerprograming/{id}"
+    text = f"El usuario *{usuario.nombre}* FINALIZÓ programación con la referencia: *{get_referencia(resultProgramacion.codfactura, resultProgramacion.codproforma)}*. URL: https://alaskacoolprogramacion-production.up.railway.app/registerprograming/{id}"
     notify_update(idUsuarioActualizador, text)
 
     conn.commit()
     return str(resultUpd.rowcount) + " Row(s) updated"
 
 def generate_and_send_notification(data_programacion, id_value, conn, estado, idUsuarioActualizador):
-    base_url = "https://alaska-cool-programacion.vercel.app/registerprograming"
+    base_url = "https://alaskacoolprogramacion-production.up.railway.app/registerprograming"
     full_url = f"{base_url}/{id_value}"
 
     idUsuarioCreacion = data_programacion.get("idUsuarioCreacion") if estado == 1 else idUsuarioActualizador
