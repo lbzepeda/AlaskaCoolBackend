@@ -1,5 +1,5 @@
 import strawberry
-from conn.db import conn, handle_db_transaction, conn_sql
+from conn.db import conn, handle_db_transaction
 from models.index import programacion, productos, proforma, det_proforma, usuarios, cuadrillas, usuario_cuadrilla, facturas, det_facturas, horario_programacion
 from strawberry.types import Info
 from datetime import datetime
@@ -39,13 +39,13 @@ tipo_programacion_map = {
     TipoProgramacion.Retiro_Retencion: "Retiro de Retención"
 }
 
-lstProductos = conn_sql.execute(productos.select()).fetchall()
+lstProductos = conn.execute(productos.select()).fetchall()
 lstProforma = conn.execute(proforma.select()).fetchall()
 lstDetProformas = conn.execute(det_proforma.select()).fetchall()
 lstUsuarios = conn.execute(usuarios.select()).fetchall()
 lstCuadrillas = conn.execute(cuadrillas.select()).fetchall()
 lstUsuario_Cuadrilla = conn.execute(usuario_cuadrilla.select()).fetchall()
-lstFacturas = conn_sql.execute(facturas.select()).fetchall()
+lstFacturas = conn.execute(facturas.select()).fetchall()
 lstDetFacturas = conn.execute(det_facturas.select()).fetchall()
 lstHorarioProgramacion = conn.execute(horario_programacion.select()).fetchall()
 
