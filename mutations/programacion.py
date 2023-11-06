@@ -366,7 +366,8 @@ async def crear_programacion(
         "FechaCreacion": current_time_utc_6,
         "idTipoProgramacion": idTipoProgramacion,
         "nombrecliente": nombrecliente,
-        "facturascheque": facturascheque
+        "facturascheque": facturascheque,
+        "idEstado": 1
     }
     result = conn.execute(programacion.insert(), data_programacion)
 
